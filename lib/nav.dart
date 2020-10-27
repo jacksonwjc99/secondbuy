@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'home.dart';
+import 'login.dart';
 import 'profile.dart';
 import 'sell.dart';
 import 'chat.dart';
+import 'signup.dart';
 
 class Nav extends StatefulWidget {
   @override

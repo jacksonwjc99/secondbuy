@@ -36,6 +36,7 @@ class Homepage extends StatelessWidget {
       appBar: new AppBar(
         backgroundColor: Colors.white,
         title: Image.asset('icons/logo.png', fit: BoxFit.cover, scale: 1.5),
+        centerTitle: true,
         actions: <Widget>[
           new IconButton(icon: Icon(Icons.search, color: Colors.black,), onPressed: (){})
         ],

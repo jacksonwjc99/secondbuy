@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:secondbuy/login.dart';
 
 class Profile extends StatelessWidget {
   @override
@@ -6,6 +7,23 @@ class Profile extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile'),
+      ),
+      body: OutlineButton(
+        child: Text("Login Now"),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => LoginPage()),
+          );
+        },
+        shape: new RoundedRectangleBorder(
+            borderRadius:
+            new BorderRadius.circular(
+                30.0)),
+        borderSide: BorderSide(
+          style: BorderStyle.solid,
+          width: 1,
+        ),
       ),
     );
   }

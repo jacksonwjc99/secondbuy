@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'home.dart';
 import 'profile.dart';
@@ -14,12 +13,7 @@ class Nav extends StatefulWidget {
 
 class _HomeState extends State<Nav> {
   int _currentIndex = 0;
-  final List<Widget> _children = [
-    Homepage(),
-    Chat(),
-    Sell(),
-    Profile()
-  ];
+  final List<Widget> _children = [Homepage(), Chat(), Sell(), Profile()];
 
   void onTabTapped(int index) {
     setState(() {
@@ -30,7 +24,8 @@ class _HomeState extends State<Nav> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _children[_currentIndex], // new
+      body: _children[_currentIndex],
+      // new
       //nav bar: https://willowtreeapps.com/ideas/how-to-use-flutter-to-build-an-app-with-bottom-navigation
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -50,9 +45,7 @@ class _HomeState extends State<Nav> {
             title: Text('Sell'),
           ),
           new BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              title: Text('Profile')
-          )
+              icon: Icon(Icons.person), title: Text('Profile'))
         ],
       ),
     );

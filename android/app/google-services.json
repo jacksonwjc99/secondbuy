@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1012077364184",
+    "firebase_url": "https://secondbuy-d198b.firebaseio.com",
+    "project_id": "secondbuy-d198b",
+    "storage_bucket": "secondbuy-d198b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1012077364184:android:584a15243779b2ec16a8ad",
+        "android_client_info": {
+          "package_name": "com.example.secondbuy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1012077364184-qgtlhq671ne1c4g3cgvb0jerlh29g4bh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHCeWFqvxZCKMWrph2H4LJy4D7i_mtaYM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1012077364184-qgtlhq671ne1c4g3cgvb0jerlh29g4bh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

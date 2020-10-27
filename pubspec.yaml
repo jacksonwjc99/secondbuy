@@ -33,6 +33,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  carousel_pro: ^1.0.0
+  firebase_database: ^3.1.6
+  firebase_auth: ^0.16.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -49,6 +52,30 @@ flutter:
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
+  assets:
+    - images/sell1.jpg
+    - images/sell2.jpg
+    - images/sell3.jpg
+    - icons/logo.png
+    - icons/washing-machine.png
+    - icons/computer.png
+    - icons/smartphone-call.png
+    - icons/tv.png
+    - icons/mens.png
+    - icons/womens.png
+    - icons/shoes.png
+    - icons/watches.png
+    - icons/bags.png
+    - icons/furniture.png
+    - icons/sports.png
+    - icons/hobby.png
+    - icons/book.png
+    - icons/music.png
+    - icons/ticket.png
+    - icons/vehicle.png
+    - icons/properties.png
+    - images/bicycle1.jpg
+    - images/earphone1.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

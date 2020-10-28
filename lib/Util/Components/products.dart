@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:secondbuy/Util/Global.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:secondbuy/product_details.dart';
 
 class Products extends StatefulWidget {
   @override
@@ -56,7 +57,14 @@ class single_prod extends StatelessWidget {
         tag: product_name,
         child: Material(
           child: InkWell(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        product_details()),
+              );
+            },
             child: GridTile(
               footer: Container(
                 color: Colors.white70,

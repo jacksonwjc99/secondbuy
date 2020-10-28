@@ -50,17 +50,16 @@ class _LoginPageSate extends State<LoginPage> {
         centerTitle: true,
         automaticallyImplyLeading: true,
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            Navigator.push(
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => App()),
-            );
-          }
-        ),
+              );
+            }),
       ),
       body: ListView(
         shrinkWrap: true,

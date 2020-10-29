@@ -16,6 +16,19 @@ class Profile extends StatelessWidget {
                 Container(
                   height: 90,
                   color: Colors.black26,
+                  child: Stack(
+                    children: <Widget>[
+                      Positioned(
+                          top: 15,
+                          right: 0,
+                          child: IconButton(
+                              icon: Icon(
+                                Icons.favorite_border,
+                                color: Colors.black,
+                              ),
+                              onPressed: () {})),
+                    ],
+                  ),
                 ),
 
                 Container(
@@ -25,7 +38,6 @@ class Profile extends StatelessWidget {
                     children: <Widget>[
                       Positioned(
                         top: 40.0,
-                        // (background container size) - (circle height / 2)
                         left: 25,
                         child: Container(
                           child: Text(

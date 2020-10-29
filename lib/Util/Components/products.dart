@@ -44,6 +44,12 @@ class _ProductsState extends State<Products> {
       "photoURL": "images/fan1.jpg",
       "price": 100,
     },
+    {
+      "id": "7",
+      "name": "Fan",
+      "photoURL": "images/fan1.jpg",
+      "price": 100,
+    },
   ];
 
   @override

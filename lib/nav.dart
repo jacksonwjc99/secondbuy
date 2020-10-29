@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'home.dart';
-import 'login.dart';
-import 'profile.dart';
-import 'sell.dart';
-import 'chat.dart';
-import 'signup.dart';
+import 'package:secondbuy/profile.dart';
+import 'package:secondbuy/home.dart';
+import 'package:secondbuy/sell.dart';
+import 'package:secondbuy/chat.dart';
+
 
 class Nav extends StatefulWidget {
   @override

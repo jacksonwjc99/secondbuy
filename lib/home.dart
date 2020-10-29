@@ -9,7 +9,7 @@ class Homepage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget image_carousel = new Container(
-      height: 200.0,
+      height: 170.0,
       child: new Carousel(
         boxFit: BoxFit.cover,
         images: [
@@ -62,7 +62,7 @@ class Homepage extends StatelessWidget {
           ),
 
           Container(
-            height: 320.0,
+            height: 380.0,
             child: Products(),
           ),
         ],

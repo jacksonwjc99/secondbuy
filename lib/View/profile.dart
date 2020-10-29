@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:secondbuy/Util/Components/products.dart';
 
-import 'package:secondbuy/login.dart';
+import 'package:secondbuy/View/login.dart';
 
 class Profile extends StatelessWidget {
   @override

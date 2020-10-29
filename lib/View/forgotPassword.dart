@@ -1,18 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:secondbuy/home.dart';
-import 'package:secondbuy/main.dart';
-import 'package:secondbuy/signup.dart';
+import 'package:secondbuy/View/login.dart';
+import 'package:secondbuy/View/main.dart';
 
-class LoginPage extends StatefulWidget {
+class ForgotPass extends StatefulWidget {
   @override
-  _LoginPageSate createState() => _LoginPageSate();
+  _FgtPassPageSate createState() => _FgtPassPageSate();
 }
 
-class _LoginPageSate extends State<LoginPage> {
+class _FgtPassPageSate extends State<ForgotPass> {
   String _email;
-  String _password;
-  String cuuid, email, mobile;
 
   final formkey = new GlobalKey<FormState>();
 
@@ -27,12 +24,10 @@ class _LoginPageSate extends State<LoginPage> {
     return false;
   }
 
-  LoginUser() {
+  ResetPassword() {
     if (checkFields()) {
-      FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: _email, password: _password)
-          .then((user) {
-        print("signed in as ${"user.uid"}");
+      FirebaseAuth.instance.sendPasswordResetEmail(email: _email).then((user) {
+        print("Email send for ${"user.uid"}");
         Navigator.of(context).pushReplacementNamed('/carry');
       }).catchError((e) {
         print(e);
@@ -57,15 +52,18 @@ class _LoginPageSate extends State<LoginPage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => App()),
+                MaterialPageRoute(builder: (context) => LoginPage()),
               );
             }),
       ),
       body: ListView(
         shrinkWrap: true,
         children: <Widget>[
+          SizedBox(
+            height: 30.0,
+          ),
           Container(
-            height: 120.0,
+            height: 150.0,
             width: 120.0,
             child: Image.asset(
               'icons/logo2.png',
@@ -88,16 +86,10 @@ class _LoginPageSate extends State<LoginPage> {
                     children: <Widget>[
                       SizedBox(
                         width: 20.0,
-                        height: 10.0,
+                        height: 30.0,
                       ),
                       _input("required email", false, "Email",
                           'Enter your Email', (value) => _email = value),
-                      SizedBox(
-                        width: 20.0,
-                        height: 20.0,
-                      ),
-                      _input("required password", true, "Password", 'Password',
-                          (value) => _password = value),
                       new Padding(
                         padding: EdgeInsets.all(8.0),
                         child: Center(
@@ -105,30 +97,13 @@ class _LoginPageSate extends State<LoginPage> {
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
                               children: <Widget>[
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: <Widget>[
-                                    InkWell(
-                                      child: Text(
-                                        'Forgot Password?',
-                                        style: TextStyle(
-                                          color: Colors.blue,
-                                          fontFamily: 'Montserrat',
-                                          fontWeight: FontWeight.bold,
-                                          decoration: TextDecoration.underline,
-                                        ),
-                                      ),
-                                      onTap: () {},
-                                    )
-                                  ],
-                                ),
                                 SizedBox(height: 15.0),
                                 Row(
                                   children: <Widget>[
                                     Expanded(
                                       child: OutlineButton(
-                                        child: Text("Login"),
-                                        onPressed: LoginUser,
+                                        child: Text("Reset Password"),
+                                        onPressed: ResetPassword,
                                         shape: new RoundedRectangleBorder(
                                             borderRadius:
                                                 new BorderRadius.circular(
@@ -148,7 +123,7 @@ class _LoginPageSate extends State<LoginPage> {
                                   children: <Widget>[
                                     InkWell(
                                       child: Text(
-                                        'Do not have an account?',
+                                        'Remember your password?',
                                         style: TextStyle(
                                           fontFamily: 'Montserrat',
                                         ),
@@ -162,7 +137,7 @@ class _LoginPageSate extends State<LoginPage> {
                                   children: <Widget>[
                                     InkWell(
                                       child: Text(
-                                        'Sign Up Now!',
+                                        'Login Now!',
                                         style: TextStyle(
                                           color: Colors.blue,
                                           fontFamily: 'Montserrat',
@@ -175,7 +150,7 @@ class _LoginPageSate extends State<LoginPage> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  SignUpPage()),
+                                                  LoginPage()),
                                         );
                                       },
                                     )

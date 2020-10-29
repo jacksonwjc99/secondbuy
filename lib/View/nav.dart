@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:secondbuy/profile.dart';
-import 'package:secondbuy/home.dart';
-import 'package:secondbuy/sell.dart';
-import 'package:secondbuy/chat.dart';
+import 'package:secondbuy/View/profile.dart';
+import 'package:secondbuy/View/home.dart';
+import 'package:secondbuy/View/sell.dart';
+import 'package:secondbuy/View/chat.dart';
 
 
 class Nav extends StatefulWidget {

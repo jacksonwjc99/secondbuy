@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:secondbuy/login.dart';
+import 'package:secondbuy/View/login.dart';
 
 class SignUpPage extends StatefulWidget {
   @override

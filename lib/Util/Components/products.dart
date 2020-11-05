@@ -105,6 +105,7 @@ class _ProductsState extends State<Products> {
                   product_price: map.values.toList()[index]['price'],
                 );
               });
+
         }
         else {
           return CircularProgressIndicator();
@@ -113,6 +114,10 @@ class _ProductsState extends State<Products> {
     );
 
   }
+
+  Future <List<Products>> getProducts() async {
+
+  };
 
 }
 
@@ -164,7 +169,7 @@ class single_prod extends StatelessWidget {
         ),
       ),
     );
-  }
+  };
 
 
 }

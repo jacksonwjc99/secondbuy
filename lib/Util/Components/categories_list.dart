@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:secondbuy/Util/Components/products.dart';
+import 'package:secondbuy/View/proddetails.dart';
 
 class CategoryList extends StatelessWidget {
   @override
@@ -93,7 +95,12 @@ class Category extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(2.0),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Products(category: "electronics", subCategory: "",)),
+          );
+        },
         child: Container(
           width: 90.0,
           child: ListTile(

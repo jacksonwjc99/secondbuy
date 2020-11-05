@@ -82,119 +82,120 @@ class _LoginPageSate extends State<LoginPage> {
               child: Center(
                   child: Form(
                 key: formkey,
-                child: Center(
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: <Widget>[
-                      SizedBox(
-                        width: 20.0,
-                        height: 10.0,
-                      ),
-                      _input("required email", false, "Email",
-                          'Enter your Email', (value) => _email = value),
-                      SizedBox(
-                        width: 20.0,
-                        height: 20.0,
-                      ),
-                      _input("required password", true, "Password", 'Password',
-                          (value) => _password = value),
-                      new Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: <Widget>[
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: <Widget>[
-                                    InkWell(
-                                      child: Text(
-                                        'Forgot Password?',
-                                        style: TextStyle(
-                                          color: Colors.blue,
-                                          fontFamily: 'Montserrat',
-                                          fontWeight: FontWeight.bold,
-                                          decoration: TextDecoration.underline,
-                                        ),
+                child: ListView(
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    SizedBox(
+                      width: 20.0,
+                      height: 10.0,
+                    ),
+                    _input("required email", false, "Email",
+                        'Enter your Email', (value) => _email = value),
+                    SizedBox(
+                      width: 20.0,
+                      height: 10.0,
+                    ),
+                    _input("required password", true, "Password", 'Password',
+                        (value) => _password = value),
+
+
+
+                    new Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  InkWell(
+                                    child: Text(
+                                      'Forgot Password?',
+                                      style: TextStyle(
+                                        color: Colors.blue,
+                                        fontFamily: 'Montserrat',
+                                        fontWeight: FontWeight.bold,
+                                        decoration: TextDecoration.underline,
                                       ),
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ForgotPass()),
-                                        );
-                                      },
-                                    )
-                                  ],
-                                ),
-                                SizedBox(height: 15.0),
-                                Row(
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: OutlineButton(
-                                        child: Text("Login"),
-                                        onPressed: LoginUser,
-                                        shape: new RoundedRectangleBorder(
-                                            borderRadius:
-                                                new BorderRadius.circular(
-                                                    30.0)),
-                                        borderSide: BorderSide(
-                                          style: BorderStyle.solid,
-                                          width: 1,
-                                        ),
-                                      ),
-                                      flex: 1,
                                     ),
-                                  ],
-                                ),
-                                SizedBox(height: 70.0),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    InkWell(
-                                      child: Text(
-                                        'Do not have an account?',
-                                        style: TextStyle(
-                                          fontFamily: 'Montserrat',
-                                        ),
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ForgotPass()),
+                                      );
+                                    },
+                                  )
+                                ],
+                              ),
+                              SizedBox(height: 15.0),
+                              Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    child: OutlineButton(
+                                      child: Text("Login"),
+                                      onPressed: LoginUser,
+                                      shape: new RoundedRectangleBorder(
+                                          borderRadius:
+                                              new BorderRadius.circular(
+                                                  30.0)),
+                                      borderSide: BorderSide(
+                                        style: BorderStyle.solid,
+                                        width: 1,
                                       ),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(height: 10.0),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    InkWell(
-                                      child: Text(
-                                        'Sign Up Now!',
-                                        style: TextStyle(
-                                          color: Colors.blue,
-                                          fontFamily: 'Montserrat',
-                                          fontWeight: FontWeight.bold,
-                                          decoration: TextDecoration.underline,
-                                        ),
+                                    ),
+                                    flex: 1,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 70.0),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  InkWell(
+                                    child: Text(
+                                      'Do not have an account?',
+                                      style: TextStyle(
+                                        fontFamily: 'Montserrat',
                                       ),
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  SignUpPage()),
-                                        );
-                                      },
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              SizedBox(height: 10.0),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  InkWell(
+                                    child: Text(
+                                      'Sign Up Now!',
+                                      style: TextStyle(
+                                        color: Colors.blue,
+                                        fontFamily: 'Montserrat',
+                                        fontWeight: FontWeight.bold,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                SignUpPage()),
+                                      );
+                                    },
+                                  )
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               )),
             ),

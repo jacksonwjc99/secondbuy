@@ -1,8 +1,12 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'DB.dart';
 class Global {
+  static Random _rnd = Random();
+  static const _chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+
   static Future<dynamic> getUserDetails() async {
     FirebaseAuth auth = FirebaseAuth.instance;
     final FirebaseUser user = await auth.currentUser();
@@ -28,4 +32,8 @@ class Global {
       return value;
     });
   }
+
+  static String generateRandomString(int length) => String.fromCharCodes(Iterable.generate(
+    length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))
+  ));
 }

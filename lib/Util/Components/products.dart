@@ -30,19 +30,39 @@ class _ProductsState extends State<Products> {
           if (snapshot.hasData) {
             Map<dynamic, dynamic> map = snapshot.data.snapshot.value;
 
-            return GridView.builder(
-                itemCount: map.values.toList().length,
-                gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                ),
-                itemBuilder: (BuildContext context, int index) {
-                  return single_prod(
-                    product_id: map.values.toList()[index]['id'],
-                    product_name: map.values.toList()[index]['name'],
-                    product_photoURL: map.values.toList()[index]['prodImg'].values.toList()[0]['image'],
-                    product_price: map.values.toList()[index]['price'],
-                  );
-                });
+            if (widget.sellerProd == null) {
+              return GridView.builder(
+                  itemCount: map.values.toList().length,
+                  gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                  ),
+                  itemBuilder: (BuildContext context, int index) {
+                    return single_prod(
+                      product_id: map.values.toList()[index]['id'],
+                      product_name: map.values.toList()[index]['name'],
+                      product_photoURL: map.values.toList()[index]['prodImg'].values.toList()[0]['image'],
+                      product_price: map.values.toList()[index]['price'],
+                    );
+                  });
+            }
+            else{
+              return GridView.builder(
+                  //itemCount: map.values.toList().length,
+                itemCount: map.values.toList().where((element) => element['sellerID'] == Global.useruid).length,
+                  gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                  ),
+                  itemBuilder: (BuildContext context, int index) {
+                    print(Global.useruid);
+                    return single_prod(
+                      product_id: map.values.toList()[index]['id'],
+                      product_name: map.values.toList()[index]['name'],
+                      product_photoURL: map.values.toList()[index]['prodImg'].values.toList()[0]['image'],
+                      product_price: map.values.toList()[index]['price'],
+                    );
+                  });
+            }
+
           }
           else {
             return CircularProgressIndicator();

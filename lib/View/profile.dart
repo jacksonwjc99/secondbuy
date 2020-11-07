@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:secondbuy/Util/Components/products.dart';
+import 'package:secondbuy/Util/Global.dart';
 
 import 'package:secondbuy/View/login.dart';
 
-class Profile extends StatelessWidget {
+
+
+class Profile extends StatefulWidget {
+  @override
+  _ProfileState createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile>{
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,7 +119,7 @@ class Profile extends StatelessWidget {
                   child: Container(
                     child: TabBarView(children: [
                       Container(
-                        child: Products(),
+                        child: Products(category: "", subCategory: "", sellerProd : true),
                       ),
                       Container(
                         child: Text("My Purchases"),
@@ -145,6 +154,8 @@ class Profile extends StatelessWidget {
     );
   }
 }
+
+
 
 /*
       body: DefaultTabController(

@@ -740,12 +740,13 @@ class _SellState extends State<Sell> {
       'dealopt' : _radioValue,
       'condition' : _radioValue2,
       'location' : sellerLocation,
-      'sellerDate' : DateTime.now().toString(),
+      'sellDate' : DateTime.now().toString(),
       'sellerID' : user.uid,
       'sellerName' : user.displayName,
       'address' : address,
       'category' : category,
       'subCategory' : subCategory,
+      'status' : 'selling',
     });
 
     //uploading product images

@@ -6,6 +6,7 @@ import 'DB.dart';
 class Global {
   static Random _rnd = Random();
   static const _chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+  static String useruid = "";
 
   static Future<dynamic> getUserDetails() async {
     FirebaseAuth auth = FirebaseAuth.instance;
@@ -16,6 +17,7 @@ class Global {
       return value;
     });
   }
+
 
   static Future<dynamic> getProductDetails(id) async {
     return DB

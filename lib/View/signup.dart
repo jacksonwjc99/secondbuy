@@ -3,6 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:secondbuy/View/login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:secondbuy/View/main.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -16,26 +19,26 @@ class _SignupPageSate extends State<SignUpPage> {
   String _contact;
   int _value = 1;
 
-  List<ListItem> _dropdownItems = [
-    ListItem(1, "Johor"),
-    ListItem(2, "Kedah"),
-    ListItem(3, "Kelantan"),
-    ListItem(4, "Melacca"),
-    ListItem(5, "Negeri Sembilan"),
-    ListItem(6, "Pahang"),
-    ListItem(7, "Penang"),
-    ListItem(8, "Perak"),
-    ListItem(9, "Sabah"),
-    ListItem(10, "Sarawak"),
-    ListItem(11, "Selangor"),
-    ListItem(12, "Terengganu"),
-    ListItem(13, "Kuala Lumpur"),
-    ListItem(14, "Labuan"),
-    ListItem(15, "Putrajaya"),
+  List<String> _dropdownItems = [
+    "Johor",
+    "Kedah",
+    "Kelantan",
+    "Melacca",
+    "Negeri Sembilan",
+    "Pahang",
+    "Penang",
+    "Perak",
+    "Sabah",
+    "Sarawak",
+    "Selangor",
+    "Terengganu",
+    "Kuala Lumpur",
+    "Labuan",
+    "Putrajaya",
   ];
 
-  List<DropdownMenuItem<ListItem>> _dropdownMenuItems;
-  ListItem _selectedItem;
+  List<DropdownMenuItem<String>> _dropdownMenuItems;
+  String _selectedItem;
 
   void initState() {
     super.initState();
@@ -43,12 +46,12 @@ class _SignupPageSate extends State<SignUpPage> {
     _selectedItem = _dropdownMenuItems[0].value;
   }
 
-  List<DropdownMenuItem<ListItem>> buildDropDownMenuItems(List listItems) {
-    List<DropdownMenuItem<ListItem>> items = List();
-    for (ListItem listItem in listItems) {
+  List<DropdownMenuItem<String>> buildDropDownMenuItems(List listItems) {
+    List<DropdownMenuItem<String>> items = List();
+    for (String listItem in listItems) {
       items.add(
-        DropdownMenuItem(
-          child: Text(listItem.name),
+        DropdownMenuItem<String>(
+          child: Text(listItem),
           value: listItem,
         ),
       );
@@ -67,18 +70,37 @@ class _SignupPageSate extends State<SignUpPage> {
     return false;
   }
 
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
   createUser() async {
     if (checkFields()) {
-      await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: _email, password: _password)
-          .then((user) {
-        print('signed in as ${"user.uid"}');
+      try {
+        AuthResult result = await auth.createUserWithEmailAndPassword(
+            email: _email, password: _password);
+        final FirebaseUser user = result.user;
 
-        Navigator.of(context).pop();
-        Navigator.of(context).pushNamed('/userpage');
-      }).catchError((e) {
+        final userRef = FirebaseDatabase().reference()
+            .child("users")
+            .child(user.uid);
+        print(user.uid + " " + _email + " " + _username + " " + _password + " " + _contact + " " + _selectedItem.toString());
+        userRef.set({
+          'address' : _selectedItem.toString(),
+          'contact' : _contact,
+          'email' : _email,
+          'password' : _password,
+          'id' : user.uid,
+          'username' : _username,
+          'photoURL' : "https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg",
+        });
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => App()),
+        );
+      }
+      catch(e) {
         print(e);
-      });
+      }
     }
   }
 
@@ -183,7 +205,8 @@ class _SignupPageSate extends State<SignUpPage> {
                                 setState(() {
                                   _selectedItem = value;
                                 });
-                              }),
+                              }
+                              ),
                         ),
                       ),
                       Center(
@@ -193,7 +216,9 @@ class _SignupPageSate extends State<SignUpPage> {
                             children: <Widget>[
                               OutlineButton(
                                 child: Text("Sign Up"),
-                                onPressed: createUser,
+                                onPressed:
+                                  createUser,
+
                                 shape: new RoundedRectangleBorder(
                                     borderRadius:
                                         new BorderRadius.circular(30.0)),

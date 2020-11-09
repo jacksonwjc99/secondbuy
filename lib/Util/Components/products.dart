@@ -23,7 +23,7 @@ class _ProductsState extends State<Products> {
 
   @override
   Widget build(BuildContext context) {
-    print("==> " + widget.sellerProd.toString());
+    //print("==> " + widget.sellerProd.toString());
     return StreamBuilder(
         stream: FirebaseDatabase.instance.reference().child("products").onValue,
         builder: (BuildContext context, AsyncSnapshot<Event> snapshot) {

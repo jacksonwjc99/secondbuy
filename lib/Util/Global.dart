@@ -8,7 +8,7 @@ class Global {
   static const _chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
   static String useruid = "";
 
-  static Future<dynamic> getUserDetails() async {
+  static Future<dynamic> getDBUser() async {
     FirebaseAuth auth = FirebaseAuth.instance;
     final FirebaseUser user = await auth.currentUser();
     return DB
@@ -17,7 +17,6 @@ class Global {
       return value;
     });
   }
-
 
   static Future<dynamic> getProductDetails(id) async {
     return DB

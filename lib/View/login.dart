@@ -33,10 +33,13 @@ class _LoginPageSate extends State<LoginPage> {
       FirebaseAuth.instance
           .signInWithEmailAndPassword(email: _email, password: _password)
           .then((user) {
-        print("signed in as ${"user.uid"}");
+        print("signed in as ${user.user.uid}");
         Global.useruid = user.user.uid;
         print("!!!!!!" + Global.useruid);
-        Navigator.of(context).pushReplacementNamed('/carry');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => App()),
+        );
       }).catchError((e) {
         print(e);
       });

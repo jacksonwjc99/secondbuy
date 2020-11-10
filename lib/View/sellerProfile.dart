@@ -1,45 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:secondbuy/Util/Components/about.dart';
 import 'package:secondbuy/Util/Components/products.dart';
-import 'package:secondbuy/Util/Global.dart';
-import 'package:secondbuy/View/editProfile.dart';
-import 'package:secondbuy/View/login.dart';
-import 'package:secondbuy/View/main.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
-class Profile extends StatefulWidget {
+class SellerProfile extends StatefulWidget {
+  SellerProfile({Key key, @required this.id}) : super(key: key);
+  final String id;
+
   @override
-  _ProfileState createState() => _ProfileState();
+  _SellerProfileState createState() => _SellerProfileState();
 }
 
-class _ProfileState extends State<Profile> {
-  final FirebaseAuth auth = FirebaseAuth.instance;
-
-  Future<void> Logout() async {
-    try {
-      await FirebaseAuth.instance.signOut();
-    } catch (ex) {
-      print("Error : $ex");
-    }
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => App()),
-    );
-  }
-
-  var isUserLogin = false;
-  var i = 0;
+class _SellerProfileState extends State<SellerProfile> {
   var username, address, contact, email, password, id, photoURL;
 
   getUserDetails() async {
     try {
-      final FirebaseUser user = await auth.currentUser();
-
       FirebaseDatabase.instance
           .reference()
           .child("users")
-          .child(user.uid)
+          .child(widget.id)
           .once()
           .then((DataSnapshot snapshot) {
         Map<dynamic, dynamic> userDB = snapshot.value;
@@ -60,31 +40,11 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     getUserDetails();
 
-    auth.currentUser().then((user) {
-      if (user != null) {
-        if (i == 0) {
-          Global.getDBUser().then((dbUser) {
-            if (dbUser != null) {
-              print("user is logged in");
-              print(username);
-              setState(() {
-                isUserLogin = true;
-              });
-            }
-          });
-          i++;
-        }
-      } else {
-        print("guest detected");
-        isUserLogin = false;
-      }
-    });
-
     return Scaffold(
       body: Stack(
         children: <Widget>[
           DefaultTabController(
-            length: 4,
+            length: 3,
             child: Column(
               children: <Widget>[
                 Container(
@@ -105,10 +65,26 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
 
-                if (isUserLogin == true)
-                  isLoginButton(),
-                if (isUserLogin == false)
-                  notLoginButton(),
+                Container(
+                  height: 100,
+                  color: Colors.black12,
+                  child: Stack(
+                    children: <Widget>[
+                      Positioned(
+                        top: 40.0,
+                        left: 25,
+                        child: Container(
+                          child: new Text(
+                            username.toString(),
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+
+                    ],
+                  ),
+                ),
 
                 //tab bar
                 Container(
@@ -119,9 +95,6 @@ class _ProfileState extends State<Profile> {
                       tabs: [
                         Tab(
                           text: "Listings",
-                        ),
-                        Tab(
-                          text: "Purchases",
                         ),
                         Tab(
                           text: "Reviews",
@@ -141,13 +114,14 @@ class _ProfileState extends State<Profile> {
                             category: "", subCategory: "", sellerProd: true),
                       ),
                       Container(
-                        child: Text("My Purchases"),
-                      ),
-                      Container(
                         child: Text("Reviews"),
                       ),
                       Container(
-                        child: About(email: email, contact: contact, address: address),
+                        child: About(
+                            id: id,
+                            email: email,
+                            contact: contact,
+                            address: address),
                       ),
                     ]),
                   ),
@@ -155,139 +129,21 @@ class _ProfileState extends State<Profile> {
               ],
             ),
           ),
-          if (isUserLogin == true) userProfilePic(),
-          if (isUserLogin == false) guestProfilePic(),
-        ],
-      ),
-    );
-  }
-
-  Widget userProfilePic() {
-    return Positioned(
-      top: 40.0, // (background container size) - (circle height / 2)
-      left: 20,
-      child: Container(
-        height: 80.0,
-        width: 80.0,
-        decoration: BoxDecoration(
-            image: DecorationImage(
-              image: NetworkImage(photoURL),
-              fit: BoxFit.fill,
-            ),
-            shape: BoxShape.circle,
-            color: Colors.white,
-            border: Border.all(color: Colors.black45, width: 2)),
-      ),
-    );
-  }
-
-  Widget guestProfilePic() {
-    return Positioned(
-      top: 40.0, // (background container size) - (circle height / 2)
-      left: 20,
-      child: Container(
-        height: 80.0,
-        width: 80.0,
-        decoration: BoxDecoration(
-            image: DecorationImage(
-              image: NetworkImage(
-                  "https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg"),
-              fit: BoxFit.fill,
-            ),
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.black45, width: 2)),
-      ),
-    );
-  }
-
-  Widget isLoginButton() {
-    return Container(
-      height: 100,
-      color: Colors.black12,
-      child: Stack(
-        children: <Widget>[
           Positioned(
-            top: 40.0,
-            left: 25,
+            top: 40.0, // (background container size) - (circle height / 2)
+            left: 20,
             child: Container(
-              child: Text(
-                username,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-          Positioned(
-            right: 10,
-            child: OutlineButton(
-              child: Text("Edit Profile"),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => EditProfile(id: id,)),
-                );
-              },
-              color: Colors.white,
-              shape: new RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(30.0)),
-              borderSide: BorderSide(
-                style: BorderStyle.solid,
-                width: 1,
-              ),
-            ),
-          ),
-          Positioned(
-            top: 45,
-            right: 10,
-            child: OutlineButton(
-              child: Text("Logout"),
-              onPressed: Logout,
-              color: Colors.white,
-              shape: new RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(30.0)),
-              borderSide: BorderSide(
-                style: BorderStyle.solid,
-                width: 1,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget notLoginButton() {
-    return Container(
-      height: 100,
-      color: Colors.black12,
-      child: Stack(
-        children: <Widget>[
-          Positioned(
-            top: 40.0,
-            left: 25,
-            child: Container(
-              child: Text(
-                "Guest",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-          Positioned(
-            right: 10,
-            child: OutlineButton(
-              child: Text("Login Now"),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                );
-              },
-              color: Colors.white,
-              shape: new RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(30.0)),
-              borderSide: BorderSide(
-                style: BorderStyle.solid,
-                width: 1,
-              ),
+              height: 80.0,
+              width: 80.0,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(
+                        "https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg"),
+                    fit: BoxFit.fill,
+                  ),
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                  border: Border.all(color: Colors.black45, width: 2)),
             ),
           ),
         ],

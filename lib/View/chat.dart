@@ -5,7 +5,12 @@ class Chat extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat'),
+        backgroundColor: Colors.white,
+        title: Text(
+          'Chat',
+          style: TextStyle(color: Colors.black),
+        ),
+        automaticallyImplyLeading: false,
       ),
     );
   }

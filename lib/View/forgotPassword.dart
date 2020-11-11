@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:secondbuy/View/login.dart';
 import 'package:secondbuy/View/main.dart';
 
@@ -24,13 +25,27 @@ class _FgtPassPageSate extends State<ForgotPass> {
     return false;
   }
 
+  bool isValid;
+
   ResetPassword() {
     if (checkFields()) {
       FirebaseAuth.instance.sendPasswordResetEmail(email: _email).then((user) {
-        print("Email send for ${"user.uid"}");
-        Navigator.of(context).pushReplacementNamed('/carry');
+        Fluttertoast.showToast(
+          msg: "Reset password email has been send",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black45,
+        );
       }).catchError((e) {
         print(e);
+        Fluttertoast.showToast(
+          msg: "Email has not been register",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black45,
+        );
       });
     }
   }

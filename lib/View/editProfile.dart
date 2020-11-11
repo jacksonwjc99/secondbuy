@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:secondbuy/View/changePassword.dart';
 import 'package:imgur/imgur.dart' as imgur;
@@ -71,8 +72,8 @@ class _EditProfileState extends State<EditProfile> {
         if (_image != null) {
           await client.image
               .uploadImage(
-                imageFile: _image,
-              )
+            imageFile: _image,
+          )
               .then((image) => imgURL = image.link);
         } else {
           imgURL = photoURL;
@@ -81,7 +82,7 @@ class _EditProfileState extends State<EditProfile> {
         print("input: " + _username + " " + _contact + " " + _address);
         print("db: " + username + " " + contact + " " + address);
         final userRef =
-            FirebaseDatabase().reference().child("users").child(widget.id);
+        FirebaseDatabase().reference().child("users").child(widget.id);
         userRef.update({
           'address': _address.isEmpty ? address : _address,
           'contact': _contact.isEmpty ? contact : _contact,
@@ -93,6 +94,13 @@ class _EditProfileState extends State<EditProfile> {
           context,
           MaterialPageRoute(builder: (context) => Nav(page: "Profile")),
         );
+        Fluttertoast.showToast(
+          msg: "Profile details has been updated",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black45,
+        );
       } catch (e) {
         print(e);
       }
@@ -102,7 +110,7 @@ class _EditProfileState extends State<EditProfile> {
   File _image;
   final picker = ImagePicker();
   final client =
-      imgur.Imgur(imgur.Authentication.fromClientId('e91a824722e23b9'));
+  imgur.Imgur(imgur.Authentication.fromClientId('e91a824722e23b9'));
 
   @override
   Widget build(BuildContext context) {
@@ -135,153 +143,153 @@ class _EditProfileState extends State<EditProfile> {
               padding: const EdgeInsets.all(28.0),
               child: Center(
                   child: new Form(
-                key: formkey,
-                child: Center(
-                  child: new ListView(
-                    shrinkWrap: true,
-                    children: <Widget>[
-                      new Text(
-                        "Profile Details",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
-                      ),
-                      SizedBox(
-                        width: 20.0,
-                        height: 20.0,
-                      ),
-                      Container(
-                        child: _image == null
-                            ? Container(
-                                height: 250.0,
-                                width: 250.0,
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(photoURL == null
-                                          ? "https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg"
-                                          : photoURL),
-                                      fit: BoxFit.fitHeight,
-                                    ),
-                                    shape: BoxShape.rectangle,
-                                    border: Border.all(
-                                        color: Colors.black45, width: 2)),
-                              )
-                            : Container(
-                                height: 250.0,
-                                width: 250.0,
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: FileImage(_image),
-                                      fit: BoxFit.fitHeight,
-                                    ),
-                                    shape: BoxShape.rectangle,
-                                    border: Border.all(
-                                        color: Colors.black45, width: 2)),
-                              ),
-                      ),
-                      ImageButton(),
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      Text(
-                        'Current username: $username',
-                      ),
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      _charInput(
-                          "required username",
-                          false,
-                          "New Username",
-                          'Enter your new Username',
-                          (value) => _username = value,
-                          TextInputType.text
-                      ),
-                      SizedBox(
-                        width: 20.0,
-                        height: 20.0,
-                      ),
-                      Text(
-                        'Current contact: $contact',
-                      ),
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      _contactInput(
-                          "required contact number",
-                          false,
-                          "New Contact",
-                          'Enter your new Contact',
-                          (value) => _contact = value,
-                          TextInputType.phone),
-                      SizedBox(
-                        width: 20.0,
-                        height: 20.0,
-                      ),
-                      Text(
-                        'Current address: $address',
-                      ),
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      _addressInput(
-                          "required address",
-                          false,
-                          "New Address",
-                          'Enter your new Address',
-                          (value) => _address = value,
-                          TextInputType.text),
-                      Center(
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 138.0, top: 8.0),
-                          child: Row(
-                            children: <Widget>[
-                              OutlineButton(
-                                child: Text("Save"),
-                                onPressed: saveEdit,
-                                shape: new RoundedRectangleBorder(
-                                    borderRadius:
-                                        new BorderRadius.circular(30.0)),
-                                borderSide: BorderSide(
-                                  style: BorderStyle.solid,
-                                  width: 1,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 18.0,
-                                width: 18.0,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                    key: formkey,
+                    child: Center(
+                      child: new ListView(
+                        shrinkWrap: true,
                         children: <Widget>[
-                          InkWell(
-                            child: Text(
-                              'Change Password?',
-                              style: TextStyle(
-                                color: Colors.blue,
-                                fontFamily: 'Montserrat',
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline,
+                          new Text(
+                            "Profile Details",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20),
+                          ),
+                          SizedBox(
+                            width: 20.0,
+                            height: 20.0,
+                          ),
+                          Container(
+                            child: _image == null
+                                ? Container(
+                              height: 250.0,
+                              width: 250.0,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: NetworkImage(photoURL == null
+                                        ? "https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg"
+                                        : photoURL),
+                                    fit: BoxFit.fitHeight,
+                                  ),
+                                  shape: BoxShape.rectangle,
+                                  border: Border.all(
+                                      color: Colors.black45, width: 2)),
+                            )
+                                : Container(
+                              height: 250.0,
+                              width: 250.0,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: FileImage(_image),
+                                    fit: BoxFit.fitHeight,
+                                  ),
+                                  shape: BoxShape.rectangle,
+                                  border: Border.all(
+                                      color: Colors.black45, width: 2)),
+                            ),
+                          ),
+                          ImageButton(),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                          Text(
+                            'Current username: $username',
+                          ),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                          _charInput(
+                              "required username",
+                              false,
+                              "New Username",
+                              'Enter your new Username',
+                                  (value) => _username = value,
+                              TextInputType.text
+                          ),
+                          SizedBox(
+                            width: 20.0,
+                            height: 20.0,
+                          ),
+                          Text(
+                            'Current contact: $contact',
+                          ),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                          _contactInput(
+                              "required contact number",
+                              false,
+                              "New Contact",
+                              'Enter your new Contact',
+                                  (value) => _contact = value,
+                              TextInputType.phone),
+                          SizedBox(
+                            width: 20.0,
+                            height: 20.0,
+                          ),
+                          Text(
+                            'Current address: $address',
+                          ),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                          _addressInput(
+                              "required address",
+                              false,
+                              "New Address",
+                              'Enter your new Address',
+                                  (value) => _address = value,
+                              TextInputType.text),
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 138.0, top: 8.0),
+                              child: Row(
+                                children: <Widget>[
+                                  OutlineButton(
+                                    child: Text("Save"),
+                                    onPressed: saveEdit,
+                                    shape: new RoundedRectangleBorder(
+                                        borderRadius:
+                                        new BorderRadius.circular(30.0)),
+                                    borderSide: BorderSide(
+                                      style: BorderStyle.solid,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 18.0,
+                                    width: 18.0,
+                                  ),
+                                ],
                               ),
                             ),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        ChangePassword(id: widget.id)),
-                              );
-                            },
-                          )
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              InkWell(
+                                child: Text(
+                                  'Change Password?',
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                    fontFamily: 'Montserrat',
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            ChangePassword(id: widget.id)),
+                                  );
+                                },
+                              )
+                            ],
+                          ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-              )),
+                    ),
+                  )),
             ),
           ),
         ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:secondbuy/Util/Components/about.dart';
 import 'package:secondbuy/Util/Components/products.dart';
 import 'package:secondbuy/Util/Global.dart';
@@ -20,13 +21,20 @@ class _ProfileState extends State<Profile> {
     try {
       await FirebaseAuth.instance.signOut();
       Global.useruid = "";
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => App()),
+      );
+      Fluttertoast.showToast(
+        msg: "Logout Successfully",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black45,
+      );
     } catch (ex) {
       print("Error : $ex");
     }
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => App()),
-    );
   }
 
   var isUserLogin = false;

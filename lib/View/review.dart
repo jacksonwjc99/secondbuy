@@ -1,8 +1,10 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:secondbuy/Util/Global.dart';
 import 'package:secondbuy/View/reviewDetail.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MyReviews extends StatefulWidget {
 
@@ -11,96 +13,72 @@ class MyReviews extends StatefulWidget {
 }
 
 class _MyReviewsState extends State<MyReviews> {
+  var uid;
+  var i = 0;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
+  void getUserID() async {
+    final FirebaseUser user = await auth.currentUser();
+    if (i == 0) {
+      setState(() {
+        uid = user.uid;
+      });
+      i++;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    getUserID();
 
-    return Container(
-      child: FutureBuilder<List<String>>(
-        future: getPurchaseList(),
-        builder: (BuildContext context, AsyncSnapshot reviewListSnapshot) {
-          if (reviewListSnapshot.connectionState != ConnectionState.done)
-            return Global.Loading("Loading");
-          print(reviewListSnapshot.data);
-          if (reviewListSnapshot.data.isEmpty) {
-            return Global.Message("You haven't purchase anything", 20, Icons.info, 30, Colors.blue);
+    //Purchase list not empty
+    return StreamBuilder(
+        stream: FirebaseDatabase.instance.reference().child("products").onValue,
+        builder: (BuildContext context, AsyncSnapshot<Event> snapshot) {
+
+          if (snapshot.hasData) {
+            Map<dynamic, dynamic> map = snapshot.data.snapshot.value;
+
+            //remove any product that is not belong to seller
+            map.removeWhere((key, value) => value['sellerID'].toString() != uid);
+
+            //remove any product that is not in review status
+            map.removeWhere((key, value) => !value['status'].toString().contains("reviewed"));
+            print(map.values);
+
+            if (map.values.isNotEmpty) {
+              return GridView.builder(
+                  itemCount: map.values.toList().length,
+                  gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 1,
+                    mainAxisSpacing: 1,
+                    childAspectRatio: 3/1,
+
+                  ),
+                  itemBuilder: (BuildContext context, int index) {
+                    return single_prod(
+                      product_id: map.values.toList()[index]['id'],
+                      product_name: map.values.toList()[index]['name'],
+                      product_photoURL: map.values.toList()[index]['prodImg'].values.toList()[0]['image'],
+                      product_price: map.values.toList()[index]['price'],
+                      product_review: map.values.toList()[index]['review'],
+                      product_rating: map.values.toList()[index]['rating'],
+                      product_status: map.values.toList()[index]['status'],
+                    );
+                  });
+            }
+            else {
+              return Global.Message("You haven't review anything", 20, Icons.info, 30, Colors.blue);
+            }
+
           }
-          else{
-            //Purchase list not empty
-            return StreamBuilder(
-                stream: FirebaseDatabase.instance.reference().child("products").onValue,
-                builder: (BuildContext context, AsyncSnapshot<Event> snapshot) {
-
-                  if (snapshot.hasData) {
-                    Map<dynamic, dynamic> map = snapshot.data.snapshot.value;
-                    //remove any product that is not purchased by the buyer
-                    map.removeWhere((key, value) => !reviewListSnapshot.data.toString().contains(value['id']));
-
-                    //remove any product that is not in review status
-                    map.removeWhere((key, value) => value['status'].toString().contains("selling"));
-
-
-                    if (map.values.isNotEmpty) {
-                      return GridView.builder(
-                          itemCount: map.values.toList().length,
-                          gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 1,
-                            mainAxisSpacing: 1,
-                            childAspectRatio: 3/1,
-
-                          ),
-                          itemBuilder: (BuildContext context, int index) {
-                            return single_prod(
-                              product_id: map.values.toList()[index]['id'],
-                              product_name: map.values.toList()[index]['name'],
-                              product_photoURL: map.values.toList()[index]['prodImg'].values.toList()[0]['image'],
-                              product_price: map.values.toList()[index]['price'],
-                              product_review: map.values.toList()[index]['review'],
-                              product_rating: map.values.toList()[index]['rating'],
-                              product_status: map.values.toList()[index]['status'],
-                            );
-                          });
-                    }
-                    else {
-                      return Global.Message("You haven't review anything", 20, Icons.error, 30, Colors.red);
-                    }
-
-                  }
-                  else {
-                    return Global.Loading("Loading your purchase list");
-                  }
-                }
-            );
+          else {
+            return Global.Loading("Loading your purchase list");
           }
-        },
-      ),
+        }
     );
   }
 
-  //Load purchase List
-  Future<List<String>> getPurchaseList() async {
-    var purchaseDb = FirebaseDatabase.instance.reference().child("users").child(Global.useruid).child("purchases");
-
-    return purchaseDb.once().then((DataSnapshot snapshot) {
-      List<String> purchaseList = new List();
-
-      if(snapshot.value != null) {
-        try{
-          snapshot.value.forEach((key, value) {
-            Map<dynamic, dynamic> purchases = value;
-            purchaseList.add(purchases.values.toList()[0]);
-          });
-
-        } on NoSuchMethodError catch (e) {
-          print(e.stackTrace);
-        }
-        return new List.from(purchaseList);
-      }
-      else {
-        return new List.from(purchaseList);
-      }
-
-    });
-  }
 
   Widget ReviewListButton() {
     return Container(
@@ -147,18 +125,83 @@ class single_prod extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
-      height: 100,
       child: Card(
         child: Hero(
           tag: product_id,
           child: InkWell(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ReviewItem(prodID : product_id, prodName: product_name, prodPic: product_photoURL, prodStatus: product_status, prodReview: product_review, prodPrice: double.parse(product_price.toString()), prodRating: int.parse(product_rating == null? 3.toString() : product_rating),)),
-              );
+              showModalBottomSheet(context: context, builder: (BuildContext builder){
+                return Container(
+                  height: MediaQuery.of(context).size.height * 0.75,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                          child: Column (
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              IconButton(
+                                icon: Icon(Icons.minimize),
+                                iconSize: 25,
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Image.network(product_photoURL, fit: BoxFit.cover, height:MediaQuery.of(context).size.height * 0.25,),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                               children: <Widget>[
+                                 Text(
+                                   product_name,
+                                   style: TextStyle(
+                                     fontSize: 22,
+                                   ),
+                                 ),
+                                 Text(
+                                   "RM " + product_price.toString(),
+                                   style: TextStyle(
+                                     fontSize: 22,
+                                   ),
+                                 ),
+                               ],
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              RatingBar(
+                                initialRating: double.parse(product_rating),
+                                direction: Axis.horizontal,
+                                allowHalfRating: false,
+                                itemCount: 5,
+                                itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                itemBuilder: (context, _) => Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                ), onRatingUpdate: (double value) {},
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                product_review,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }, isScrollControlled: true);
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),

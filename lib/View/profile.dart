@@ -5,9 +5,9 @@ import 'package:secondbuy/Util/Components/products.dart';
 import 'package:secondbuy/Util/Global.dart';
 import 'package:secondbuy/View/editProfile.dart';
 import 'package:secondbuy/View/login.dart';
-import 'package:secondbuy/View/main.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:secondbuy/View/nav.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -23,7 +23,7 @@ class _ProfileState extends State<Profile> {
       Global.useruid = "";
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => App()),
+        MaterialPageRoute(builder: (context) => Nav(page: "Homepage")),
       );
       Fluttertoast.showToast(
         msg: "Logout Successfully",

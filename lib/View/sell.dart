@@ -2,13 +2,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-
-//import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:imgur/imgur.dart' as imgur;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:secondbuy/Util/Global.dart';
-import 'package:secondbuy/View/signup.dart';
 
 class Sell extends StatefulWidget {
   _SellState createState() => _SellState();

@@ -1,12 +1,9 @@
-//https://github.com/dvmjoshi/stuff
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:secondbuy/View/login.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:secondbuy/View/main.dart';
+import 'package:secondbuy/View/nav.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -96,7 +93,7 @@ class _SignupPageSate extends State<SignUpPage> {
 
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => App()),
+          MaterialPageRoute(builder: (context) => Nav(page: "Hamepage")),
         );
         Fluttertoast.showToast(
           msg: "Register Successfully",

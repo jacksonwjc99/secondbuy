@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-import 'main.dart';
-
 class ProdDetails extends StatefulWidget {
   ProdDetails({Key key, @required this.prodID}) : super(key : key);
   final String prodID;
@@ -78,10 +76,7 @@ class _ProductDetailsState extends State<ProdDetails> {
                     color: Colors.black,
                   ),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => App()),
-                    );
+                    Navigator.pop(context);
                   }),
             ),
             body: SingleChildScrollView(

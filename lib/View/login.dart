@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:secondbuy/Util/Global.dart';
 import 'package:secondbuy/View/forgotPassword.dart';
-import 'package:secondbuy/View/main.dart';
+import 'package:secondbuy/View/nav.dart';
 import 'package:secondbuy/View/signup.dart';
 
 class LoginPage extends StatefulWidget {
@@ -41,7 +41,7 @@ class _LoginPageSate extends State<LoginPage> {
         print("!!!!!!" + Global.useruid);
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => App()),
+          MaterialPageRoute(builder: (context) => Nav(page: "Hamepage")),
         );
         Fluttertoast.showToast(
           msg: "Login Successfully",
@@ -80,7 +80,7 @@ class _LoginPageSate extends State<LoginPage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => App()),
+                MaterialPageRoute(builder: (context) => Nav(page: "Hamepage")),
               );
             }),
       ),

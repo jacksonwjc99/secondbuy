@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'nav.dart';
+import 'package:secondbuy/View/nav.dart';
 
 void main() => runApp(App());
 

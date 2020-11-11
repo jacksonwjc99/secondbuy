@@ -19,6 +19,7 @@ class _ProfileState extends State<Profile> {
   Future<void> Logout() async {
     try {
       await FirebaseAuth.instance.signOut();
+      Global.useruid = "";
     } catch (ex) {
       print("Error : $ex");
     }
@@ -80,11 +81,18 @@ class _ProfileState extends State<Profile> {
       }
     });
 
+    int length = 0;
+
+    if (isUserLogin == true)
+      length = 4;
+    else
+      length = 3;
+
     return Scaffold(
       body: Stack(
         children: <Widget>[
           DefaultTabController(
-            length: 4,
+            length: length,
             child: Column(
               children: <Widget>[
                 Container(
@@ -126,9 +134,10 @@ class _ProfileState extends State<Profile> {
                         Tab(
                           text: "Reviews",
                         ),
-                        Tab(
-                          text: "About",
-                        ),
+                        if (isUserLogin == true)
+                          Tab(
+                            text: "About",
+                          ),
                       ]),
                 ),
 
@@ -136,19 +145,55 @@ class _ProfileState extends State<Profile> {
                 Expanded(
                   child: Container(
                     child: TabBarView(children: [
-                      Container(
-                        child: Products(
-                            category: "", subCategory: "", sellerProd: true),
-                      ),
-                      Container(
-                        child: Text("My Purchases"),
-                      ),
-                      Container(
-                        child: Text("Reviews"),
-                      ),
-                      Container(
-                        child: About(email: email, contact: contact, address: address),
-                      ),
+                      //show listing
+                      if (isUserLogin == true)
+                        Container(
+                          child: Products(
+                              category: "", subCategory: "", sellerProd: true),
+                        ),
+                      if (isUserLogin == false)
+                        Container(
+                          margin: const EdgeInsets.only(top: 200.0),
+                          child: Text(
+                            "Login now to view more",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontStyle: FontStyle.italic, fontSize: 25),
+                          ),
+                        ),
+                      //show purchases
+                      if (isUserLogin == true)
+                        Container(
+                          child: Text("My Purchases"),
+                        ),
+                      if (isUserLogin == false)
+                        Container(
+                          margin: const EdgeInsets.only(top: 200.0),
+                          child: Text(
+                            "Login now to view more",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontStyle: FontStyle.italic, fontSize: 25),
+                          ),
+                        ),
+                      //show review
+                      if (isUserLogin == true)
+                        Container(
+                          child: Text("Reviews"),
+                        ),
+                      if (isUserLogin == false)
+                        Container(
+                          margin: const EdgeInsets.only(top: 200.0),
+                          child: Text(
+                            "Login now to view more",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontStyle: FontStyle.italic, fontSize: 25),
+                          ),
+                        ),
+                      //show about
+                      if (isUserLogin == true)
+                        Container(
+                          child: About(
+                              email: email, contact: contact, address: address),
+                        ),
                     ]),
                   ),
                 )
@@ -223,7 +268,10 @@ class _ProfileState extends State<Profile> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => EditProfile(id: id,)),
+                  MaterialPageRoute(
+                      builder: (context) => EditProfile(
+                            id: id,
+                          )),
                 );
               },
               color: Colors.white,

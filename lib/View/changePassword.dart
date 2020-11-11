@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:secondbuy/View/editProfile.dart';
+import 'package:secondbuy/View/nav.dart';
 import 'package:secondbuy/View/profile.dart';
 
 class ChangePassword extends StatefulWidget {
@@ -15,6 +16,7 @@ class ChangePassword extends StatefulWidget {
 class _ChangePasswordState extends State<ChangePassword> {
   String _newPassword;
   String _oldPassword;
+  String _confPassword;
   int _value = 1;
 
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -63,11 +65,15 @@ class _ChangePasswordState extends State<ChangePassword> {
   changePassword() {
     if (checkFields()) {
       try {
+        print(password);
+        print(_oldPassword);
+        print(_newPassword);
         if (password == _oldPassword) {
-          FirebaseAuth.instance
-              .currentUser()
-              .then((user) {
-            user.updatePassword(_newPassword);
+          FirebaseAuth.instance.currentUser().then((user) async {
+            var credential = EmailAuthProvider.getCredential(
+                email: user.email, password: password);
+            var result = await user.reauthenticateWithCredential(credential);
+            await result.user.updatePassword(_newPassword);
           }).catchError((e) {
             print(e);
           });
@@ -80,7 +86,7 @@ class _ChangePasswordState extends State<ChangePassword> {
 
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => Profile()),
+            MaterialPageRoute(builder: (context) => Nav(page: "Profile")),
           );
         }
       } catch (e) {
@@ -107,7 +113,10 @@ class _ChangePasswordState extends State<ChangePassword> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => EditProfile(id: widget.id,)),
+              MaterialPageRoute(
+                  builder: (context) => EditProfile(
+                        id: widget.id,
+                      )),
             );
           },
         ),
@@ -120,70 +129,72 @@ class _ChangePasswordState extends State<ChangePassword> {
               padding: const EdgeInsets.all(28.0),
               child: Center(
                   child: new Form(
-                    key: formkey,
-                    child: Center(
-                      child: new ListView(
-                        shrinkWrap: true,
-                        children: <Widget>[
-                          new Text(
-                            "Change Password",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20),
-                          ),
-                          SizedBox(
-                            width: 20.0,
-                            height: 20.0,
-                          ),
-                          _input(
-                              "required new password",
-                              true,
-                              "New Password",
-                              'Enter your new Password',
-                                  (value) => _newPassword = value,
-                              TextInputType.text),
-                          SizedBox(
-                            width: 20.0,
-                            height: 20.0,
-                          ),
-                          _input(
-                              "required old password",
-                              true,
-                              "Old Password",
-                              'Enter your old Password',
-                                  (value) => _oldPassword = value,
-                              TextInputType.text),
-                          SizedBox(
-                            width: 20.0,
-                            height: 20.0,
-                          ),
-                          Center(
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 138.0, top: 8.0),
-                              child: Row(
-                                children: <Widget>[
-                                  OutlineButton(
-                                    child: Text("Change"),
-                                    onPressed: changePassword,
-                                    shape: new RoundedRectangleBorder(
-                                        borderRadius:
-                                        new BorderRadius.circular(30.0)),
-                                    borderSide: BorderSide(
-                                      style: BorderStyle.solid,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 18.0,
-                                    width: 18.0,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
+                key: formkey,
+                child: Center(
+                  child: new ListView(
+                    shrinkWrap: true,
+                    children: <Widget>[
+                      new Text(
+                        "Change Password",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
                       ),
-                    ),
-                  )),
+                      SizedBox(
+                        width: 20.0,
+                        height: 20.0,
+                      ),
+                      _newPassinput(
+                          "required new password",
+                          true,
+                          "New Password",
+                          'Enter your new password',
+                          (value) => _newPassword = value,
+                          TextInputType.text),
+                      SizedBox(
+                        width: 20.0,
+                        height: 20.0,
+                      ),
+
+                      _oldPassinput(
+                          "required current password",
+                          true,
+                          "Current Password",
+                          'Enter your current password',
+                          (value) => _oldPassword = value,
+                          TextInputType.text,
+                          password),
+                      SizedBox(
+                        width: 20.0,
+                        height: 20.0,
+                      ),
+                      Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 138.0, top: 8.0),
+                          child: Row(
+                            children: <Widget>[
+                              OutlineButton(
+                                child: Text("Change"),
+                                onPressed: changePassword,
+                                shape: new RoundedRectangleBorder(
+                                    borderRadius:
+                                        new BorderRadius.circular(30.0)),
+                                borderSide: BorderSide(
+                                  style: BorderStyle.solid,
+                                  width: 1,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 18.0,
+                                width: 18.0,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )),
             ),
           ),
         ],
@@ -191,7 +202,7 @@ class _ChangePasswordState extends State<ChangePassword> {
     );
   }
 
-  Widget _input(
+  Widget _newPassinput(
       String validation, bool, String label, String hint, save, keyboard) {
     return new TextFormField(
       decoration: InputDecoration(
@@ -201,7 +212,47 @@ class _ChangePasswordState extends State<ChangePassword> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
       ),
       obscureText: bool,
-      validator: (value) => value.isEmpty ? validation : null,
+      validator: (value) {
+        String errMsg;
+        if (value.isNotEmpty) {
+          Pattern pattern = r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$';
+          RegExp regex = new RegExp(pattern);
+          if (!regex.hasMatch(value))
+            errMsg = 'Contain 8 or more characters & numbers only';
+          else{
+            return null;
+          }
+          return errMsg;
+        } else {
+          return validation;
+        }
+      },
+      onSaved: save,
+      keyboardType: keyboard,
+    );
+  }
+
+  Widget _oldPassinput(String validation, bool, String label, String hint, save,
+      keyboard, password) {
+    return new TextFormField(
+      decoration: InputDecoration(
+        hintText: hint,
+        labelText: label,
+        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 20.0),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+      ),
+      obscureText: bool,
+      validator: (value) {
+        String errMsg;
+        if (value.isEmpty) {
+          return validation;
+        } else {
+          if (value != password) {
+            errMsg = 'Current password is incorrect';
+          }
+          return errMsg;
+        }
+      },
       onSaved: save,
       keyboardType: keyboard,
     );

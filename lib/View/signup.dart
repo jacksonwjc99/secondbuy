@@ -147,7 +147,7 @@ class _SignupPageSate extends State<SignUpPage> {
                   child: new ListView(
                     shrinkWrap: true,
                     children: <Widget>[
-                      _input(
+                      _emailInput(
                           "required email",
                           false,
                           "Email",
@@ -158,7 +158,7 @@ class _SignupPageSate extends State<SignUpPage> {
                         width: 20.0,
                         height: 20.0,
                       ),
-                      _input(
+                      _charInput(
                           "required username",
                           false,
                           "Username",
@@ -169,7 +169,7 @@ class _SignupPageSate extends State<SignUpPage> {
                         width: 20.0,
                         height: 20.0,
                       ),
-                      _input(
+                      _passwordInput(
                           "required password",
                           true,
                           "Password",
@@ -180,7 +180,7 @@ class _SignupPageSate extends State<SignUpPage> {
                         width: 20.0,
                         height: 20.0,
                       ),
-                      _input(
+                      _contactInput(
                           "required contact number",
                           false,
                           "Contact No.",
@@ -246,7 +246,7 @@ class _SignupPageSate extends State<SignUpPage> {
     );
   }
 
-  Widget _input(
+  Widget _emailInput(
       String validation, bool, String label, String hint, save, keyboard) {
     return new TextFormField(
       decoration: InputDecoration(
@@ -256,7 +256,107 @@ class _SignupPageSate extends State<SignUpPage> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
       ),
       obscureText: bool,
-      validator: (value) => value.isEmpty ? validation : null,
+      validator: (value) {
+        String errMsg;
+        if (value.isNotEmpty) {
+          Pattern pattern = r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$";
+          RegExp regex = new RegExp(pattern);
+          if (!regex.hasMatch(value))
+            errMsg = 'Incorrect Email Format (abc@mail.com)';
+          else
+            return null;
+          return errMsg;
+        }else{
+          return validation;
+        }
+      },
+      onSaved: save,
+      keyboardType: keyboard,
+    );
+  }
+
+  Widget _charInput(String validation, bool, String label, String hint, save,
+      keyboard) {
+    return new TextFormField(
+      decoration: InputDecoration(
+        hintText: hint,
+        labelText: label,
+        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 20.0),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+      ),
+      obscureText: bool,
+      validator: (value) {
+        String errMsg;
+        if (value.isNotEmpty) {
+          Pattern pattern = r'^[a-zA-Z ]*$';
+          RegExp regex = new RegExp(pattern);
+          if (!regex.hasMatch(value))
+            errMsg = 'Username must be letter & space only';
+          else
+            return null;
+          return errMsg;
+        }else{
+          return validation;
+        }
+      },
+      onSaved: save,
+      keyboardType: keyboard,
+    );
+  }
+
+  Widget _contactInput(
+      String validation, bool, String label, String hint, save, keyboard) {
+    return new TextFormField(
+      decoration: InputDecoration(
+        hintText: hint,
+        labelText: label,
+        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 20.0),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+      ),
+      obscureText: bool,
+      validator: (value) {
+        String errMsg;
+        if (value.isNotEmpty) {
+          Pattern pattern = r'^[0-9]{10,11}$';
+          RegExp regex = new RegExp(pattern);
+          if (!regex.hasMatch(value))
+            errMsg = 'Contact must be within 10 or 11 digits';
+          else
+            return null;
+          return errMsg;
+        }else{
+          return validation;
+        }
+      },
+      onSaved: save,
+      keyboardType: keyboard,
+    );
+  }
+
+  Widget _passwordInput(
+      String validation, bool, String label, String hint, save, keyboard) {
+    return new TextFormField(
+      decoration: InputDecoration(
+        hintText: hint,
+        labelText: label,
+        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 20.0),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+      ),
+      obscureText: bool,
+      validator: (value) {
+        String errMsg;
+        if (value.isNotEmpty) {
+          Pattern pattern = r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$';
+          RegExp regex = new RegExp(pattern);
+          if (!regex.hasMatch(value))
+            errMsg = 'Contain 8 or more characters & numbers only';
+          else
+            return null;
+          return errMsg;
+        } else {
+          return validation;
+        }
+      },
       onSaved: save,
       keyboardType: keyboard,
     );

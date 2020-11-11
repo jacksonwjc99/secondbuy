@@ -28,6 +28,8 @@ class _LoginPageSate extends State<LoginPage> {
     return false;
   }
 
+  bool isValid = false;
+
   LoginUser() {
     if (checkFields()) {
       FirebaseAuth.instance
@@ -42,6 +44,9 @@ class _LoginPageSate extends State<LoginPage> {
         );
       }).catchError((e) {
         print(e);
+        setState(() {
+          isValid = true;
+        });
       });
     }
   }
@@ -95,17 +100,23 @@ class _LoginPageSate extends State<LoginPage> {
                       width: 20.0,
                       height: 10.0,
                     ),
-                    _input("required email", false, "Email",
-                        'Enter your Email', (value) => _email = value),
+                    if (isValid == true)
+                      Text(
+                        "Invalid Email or Password",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    SizedBox(
+                      width: 20.0,
+                      height: 10.0,
+                    ),
+                    _input("required email", false, "Email", 'Enter your Email',
+                        (value) => _email = value),
                     SizedBox(
                       width: 20.0,
                       height: 10.0,
                     ),
                     _input("required password", true, "Password", 'Password',
                         (value) => _password = value),
-
-
-
                     new Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Center(
@@ -130,8 +141,7 @@ class _LoginPageSate extends State<LoginPage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                ForgotPass()),
+                                            builder: (context) => ForgotPass()),
                                       );
                                     },
                                   )
@@ -146,8 +156,7 @@ class _LoginPageSate extends State<LoginPage> {
                                       onPressed: LoginUser,
                                       shape: new RoundedRectangleBorder(
                                           borderRadius:
-                                              new BorderRadius.circular(
-                                                  30.0)),
+                                              new BorderRadius.circular(30.0)),
                                       borderSide: BorderSide(
                                         style: BorderStyle.solid,
                                         width: 1,
@@ -189,8 +198,7 @@ class _LoginPageSate extends State<LoginPage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                SignUpPage()),
+                                            builder: (context) => SignUpPage()),
                                       );
                                     },
                                   )

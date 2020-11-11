@@ -20,9 +20,24 @@ class Products extends StatefulWidget {
 class _ProductsState extends State<Products> {
   var productList = [];
   var imageList = [];
+  var uid;
+  var i = 0;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
+  void getUserID() async {
+    final FirebaseUser user = await auth.currentUser();
+    if (i == 0) {
+      setState(() {
+        uid = user.uid;
+      });
+      i++;
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
+    getUserID();
     //print("==> " + widget.sellerProd.toString());
     return StreamBuilder(
         stream: FirebaseDatabase.instance.reference().child("products").onValue,
@@ -48,12 +63,12 @@ class _ProductsState extends State<Products> {
             else{
               return GridView.builder(
                   //itemCount: map.values.toList().length,
-                itemCount: map.values.toList().where((element) => element['sellerID'] == Global.useruid).length,
+                itemCount: map.values.toList().where((element) => element['sellerID'] == uid).length,
                   gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                   ),
                   itemBuilder: (BuildContext context, int index) {
-                    print(Global.useruid);
+                    //print(Global.useruid);
                     return single_prod(
                       product_id: map.values.toList()[index]['id'],
                       product_name: map.values.toList()[index]['name'],

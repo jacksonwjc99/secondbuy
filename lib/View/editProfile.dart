@@ -1,10 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:secondbuy/View/changePassword.dart';
-import 'package:secondbuy/View/profile.dart';
-
-import 'nav.dart';
+import 'package:imgur/imgur.dart' as imgur;
+import 'package:secondbuy/View/nav.dart';
 
 class EditProfile extends StatefulWidget {
   EditProfile({Key key, @required this.id}) : super(key: key);
@@ -63,28 +64,45 @@ class _EditProfileState extends State<EditProfile> {
     }
   }
 
-  saveEdit() {
+  saveEdit() async {
     if (checkFields()) {
       try {
+        String imgURL;
+        if (_image != null) {
+          await client.image
+              .uploadImage(
+                imageFile: _image,
+              )
+              .then((image) => imgURL = image.link);
+        } else {
+          imgURL = photoURL;
+        }
+        print("Image link here : " + imgURL);
+        print("input: " + _username + " " + _contact + " " + _address);
+        print("db: " + username + " " + contact + " " + address);
         final userRef =
             FirebaseDatabase().reference().child("users").child(widget.id);
         userRef.update({
-          'address': _address,
-          'contact': _contact,
-          'username': _username,
-          'photoURL':
-              "https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg",
+          'address': _address.isEmpty ? address : _address,
+          'contact': _contact.isEmpty ? contact : _contact,
+          'username': _username.isEmpty ? username : _username,
+          'photoURL': imgURL,
         });
 
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Nav()),
+          MaterialPageRoute(builder: (context) => Nav(page: "Profile")),
         );
       } catch (e) {
         print(e);
       }
     }
   }
+
+  File _image;
+  final picker = ImagePicker();
+  final client =
+      imgur.Imgur(imgur.Authentication.fromClientId('e91a824722e23b9'));
 
   @override
   Widget build(BuildContext context) {
@@ -131,19 +149,53 @@ class _EditProfileState extends State<EditProfile> {
                         width: 20.0,
                         height: 20.0,
                       ),
+                      Container(
+                        child: _image == null
+                            ? Container(
+                                height: 250.0,
+                                width: 250.0,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: NetworkImage(photoURL == null
+                                          ? "https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg"
+                                          : photoURL),
+                                      fit: BoxFit.fitHeight,
+                                    ),
+                                    shape: BoxShape.rectangle,
+                                    border: Border.all(
+                                        color: Colors.black45, width: 2)),
+                              )
+                            : Container(
+                                height: 250.0,
+                                width: 250.0,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: FileImage(_image),
+                                      fit: BoxFit.fitHeight,
+                                    ),
+                                    shape: BoxShape.rectangle,
+                                    border: Border.all(
+                                        color: Colors.black45, width: 2)),
+                              ),
+                      ),
+                      ImageButton(),
+                      SizedBox(
+                        height: 10.0,
+                      ),
                       Text(
                         'Current username: $username',
                       ),
                       SizedBox(
                         height: 10.0,
                       ),
-                      _input(
+                      _charInput(
                           "required username",
                           false,
                           "New Username",
                           'Enter your new Username',
                           (value) => _username = value,
-                          TextInputType.text),
+                          TextInputType.text
+                      ),
                       SizedBox(
                         width: 20.0,
                         height: 20.0,
@@ -154,7 +206,7 @@ class _EditProfileState extends State<EditProfile> {
                       SizedBox(
                         height: 10.0,
                       ),
-                      _input(
+                      _contactInput(
                           "required contact number",
                           false,
                           "New Contact",
@@ -171,7 +223,7 @@ class _EditProfileState extends State<EditProfile> {
                       SizedBox(
                         height: 10.0,
                       ),
-                      _input(
+                      _addressInput(
                           "required address",
                           false,
                           "New Address",
@@ -226,7 +278,6 @@ class _EditProfileState extends State<EditProfile> {
                           )
                         ],
                       ),
-
                     ],
                   ),
                 ),
@@ -238,7 +289,41 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  Widget _input(
+  Widget ImageButton() {
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: OutlineButton(
+            child: Text("Upload Image"),
+            onPressed: () {
+              getImage();
+            },
+            shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(30.0)),
+            borderSide: BorderSide(
+              style: BorderStyle.solid,
+              width: 1,
+            ),
+          ),
+          flex: 1,
+        ),
+      ],
+    );
+  }
+
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Widget _addressInput(
       String validation, bool, String label, String hint, save, keyboard) {
     return new TextFormField(
       decoration: InputDecoration(
@@ -248,7 +333,72 @@ class _EditProfileState extends State<EditProfile> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
       ),
       obscureText: bool,
-      validator: (value) => value.isEmpty ? validation : null,
+      validator: (value) {
+        String errMsg;
+        if (value.isNotEmpty) {
+          Pattern pattern = r'^[a-zA-Z0-9 ,.-:&]*$';
+          RegExp regex = new RegExp(pattern);
+          if (!regex.hasMatch(value))
+            errMsg = 'Invalid Address';
+          else
+            return null;
+        }
+        return errMsg;
+      },
+      onSaved: save,
+      keyboardType: keyboard,
+    );
+  }
+
+  Widget _charInput(String validation, bool, String label, String hint, save,
+      keyboard) {
+    return new TextFormField(
+      decoration: InputDecoration(
+        hintText: hint,
+        labelText: label,
+        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 20.0),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+      ),
+      obscureText: bool,
+      validator: (value) {
+        String errMsg;
+        if (value.isNotEmpty) {
+          Pattern pattern = r'^[a-zA-Z ]*$';
+          RegExp regex = new RegExp(pattern);
+          if (!regex.hasMatch(value))
+            errMsg = 'Username must be letter & space only';
+          else
+            return null;
+        }
+        return errMsg;
+      },
+      onSaved: save,
+      keyboardType: keyboard,
+    );
+  }
+
+  Widget _contactInput(
+      String validation, bool, String label, String hint, save, keyboard) {
+    return new TextFormField(
+      decoration: InputDecoration(
+        hintText: hint,
+        labelText: label,
+        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 20.0),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+      ),
+      obscureText: bool,
+      validator: (value) {
+        String errMsg;
+        if (value.isNotEmpty) {
+          Pattern pattern = r'^[0-9]{10,11}$';
+          RegExp regex = new RegExp(pattern);
+          if (!regex.hasMatch(value))
+            errMsg = 'Contact must be within 10 or 11 digits';
+          else
+            return null;
+        }
+        return errMsg;
+      },
       onSaved: save,
       keyboardType: keyboard,
     );

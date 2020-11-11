@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:secondbuy/Util/Components/about.dart';
 import 'package:secondbuy/Util/Components/products.dart';
 import 'package:secondbuy/Util/Global.dart';
 import 'package:secondbuy/View/editProfile.dart';
 import 'package:secondbuy/View/login.dart';
-import 'package:secondbuy/View/main.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:secondbuy/View/review.dart';
-
-import 'MyPurchase.dart';
+import 'package:secondbuy/View/nav.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -23,13 +21,20 @@ class _ProfileState extends State<Profile> {
     try {
       await FirebaseAuth.instance.signOut();
       Global.useruid = "";
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Nav(page: "Homepage")),
+      );
+      Fluttertoast.showToast(
+        msg: "Logout Successfully",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black45,
+      );
     } catch (ex) {
       print("Error : $ex");
     }
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => App()),
-    );
   }
 
   var isUserLogin = false;
@@ -166,7 +171,7 @@ class _ProfileState extends State<Profile> {
                       //show purchases
                       if (isUserLogin == true)
                         Container(
-                          child: MyPurchase(),
+                          child: Text("My Purchases"),
                         ),
                       if (isUserLogin == false)
                         Container(
@@ -180,7 +185,7 @@ class _ProfileState extends State<Profile> {
                       //show review
                       if (isUserLogin == true)
                         Container(
-                          child: MyReviews(),
+                          child: Text("Reviews"),
                         ),
                       if (isUserLogin == false)
                         Container(

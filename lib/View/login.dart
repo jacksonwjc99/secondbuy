@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:secondbuy/Util/Global.dart';
 import 'package:secondbuy/View/forgotPassword.dart';
-import 'package:secondbuy/View/main.dart';
+import 'package:secondbuy/View/nav.dart';
 import 'package:secondbuy/View/signup.dart';
 
 class LoginPage extends StatefulWidget {
@@ -41,13 +42,24 @@ class _LoginPageSate extends State<LoginPage> {
         print("!!!!!!" + Global.useruid);
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => App()),
+          MaterialPageRoute(builder: (context) => Nav(page: "Hamepage")),
+        );
+        Fluttertoast.showToast(
+          msg: "Login Successfully",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black45,
         );
       }).catchError((e) {
         print(e);
-        setState(() {
-          isValid = true;
-        });
+        Fluttertoast.showToast(
+          msg: "Invalid Email or Password",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black45,
+        );
       });
     }
   }
@@ -69,7 +81,7 @@ class _LoginPageSate extends State<LoginPage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => App()),
+                MaterialPageRoute(builder: (context) => Nav(page: "Hamepage")),
               );
             }),
       ),
@@ -101,11 +113,6 @@ class _LoginPageSate extends State<LoginPage> {
                       width: 20.0,
                       height: 10.0,
                     ),
-                    if (isValid == true)
-                      Text(
-                        "Invalid Email or Password",
-                        style: TextStyle(color: Colors.red),
-                      ),
                     SizedBox(
                       width: 20.0,
                       height: 10.0,

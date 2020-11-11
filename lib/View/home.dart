@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:carousel_pro/carousel_pro.dart';
-
 import 'package:secondbuy/Util/Components/categories_list.dart';
 import 'package:secondbuy/Util/Components/products.dart';
 
-class Homepage extends StatelessWidget {
+class Homepage extends StatefulWidget {
+  @override
+  _HomepageState createState() => _HomepageState();
+}
+
+class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     Widget image_carousel = new Container(
@@ -39,7 +43,12 @@ class Homepage extends StatelessWidget {
         title: Image.asset('icons/logo.png', fit: BoxFit.cover, scale: 1.5),
         centerTitle: true,
         actions: <Widget>[
-          new IconButton(icon: Icon(Icons.search, color: Colors.black,), onPressed: (){})
+          new IconButton(
+              icon: Icon(
+                Icons.search,
+                color: Colors.black,
+              ),
+              onPressed: () {})
         ],
       ),
       body: new ListView(

@@ -29,8 +29,6 @@ class _LoginPageSate extends State<LoginPage> {
     return false;
   }
 
-  bool isValid = false;
-
   LoginUser() {
     if (checkFields()) {
       FirebaseAuth.instance

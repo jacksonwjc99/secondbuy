@@ -34,7 +34,9 @@ class _ChatState extends State<Chat> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat'),
+        backgroundColor: Colors.white,
+        title: Text('Chat',style: TextStyle(color: Colors.black),),
+        automaticallyImplyLeading: false,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search),

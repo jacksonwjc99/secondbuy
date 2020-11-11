@@ -141,7 +141,7 @@ class single_prod extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
                           child: Column (
-                            mainAxisAlignment: MainAxisAlignment.start, 
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
                               IconButton(
                                 icon: Icon(Icons.minimize),

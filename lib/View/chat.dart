@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:secondbuy/Model/Contact.dart';
 import 'package:secondbuy/Util/Global.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'Chatting.dart';
 
@@ -13,9 +14,24 @@ class Chat extends StatefulWidget {
 }
 
 class _ChatState extends State<Chat> {
+  var uid;
+  var i = 0;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
+  void getUserID() async {
+    final FirebaseUser user = await auth.currentUser();
+    if (i == 0) {
+      setState(() {
+        uid = user.uid;
+      });
+      i++;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    getUserID();
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Chat'),
@@ -139,10 +155,10 @@ class _ChatState extends State<Chat> {
 
 
   Future<List<String>> GetContactCount() async{
-    var chatRef = FirebaseDatabase.instance.reference().child("chats").child(Global.useruid);
+    var chatRef = FirebaseDatabase.instance.reference().child("chats").child(uid);
     List<String> contactFound = new List();
 
-    if (Global.useruid != "") {
+    if (uid != "") {
       return chatRef.once().then((DataSnapshot snapshot) {
         try{
           snapshot.value.forEach((key, value) {

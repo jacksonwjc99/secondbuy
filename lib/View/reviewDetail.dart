@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:secondbuy/Util/Global.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ReviewItem extends StatefulWidget {
   ReviewItem({Key key, @required this.prodID, @required this.prodName, @required this.prodPic, @required this.prodStatus, @required this.prodReview, @required this.prodPrice, @required this.prodRating}) : super(key: key);
@@ -24,8 +25,24 @@ class _ReviewItem extends State<ReviewItem> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  var uid;
+  var i = 0;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
+  void getUserID() async {
+    final FirebaseUser user = await auth.currentUser();
+    if (i == 0) {
+      setState(() {
+        uid = user.uid;
+      });
+      i++;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    getUserID();
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(

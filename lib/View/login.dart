@@ -37,6 +37,7 @@ class _LoginPageSate extends State<LoginPage> {
           .then((user) {
         print("signed in as ${user.user.uid}");
         Global.useruid = user.user.uid;
+        Global.username = user.user.displayName;
         print("!!!!!!" + Global.useruid);
         Navigator.push(
           context,

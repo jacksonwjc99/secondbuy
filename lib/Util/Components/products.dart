@@ -38,6 +38,7 @@ class _ProductsState extends State<Products> {
   @override
   Widget build(BuildContext context) {
     getUserID();
+
     //print("==> " + widget.sellerProd.toString());
     return StreamBuilder(
         stream: FirebaseDatabase.instance.reference().child("products").onValue,
@@ -47,6 +48,7 @@ class _ProductsState extends State<Products> {
 
             if (widget.sellerProd == null && widget.subCategory == null && widget.category == null) { //Show all Product
               map.removeWhere((key, value) => value['status'] != "selling");
+
               if (map.values.isNotEmpty) {
                 return GridView.builder(
                     itemCount: map.values.toList().length,
@@ -120,8 +122,8 @@ class _ProductsState extends State<Products> {
 
             }
             else{ // Listings
-              map.removeWhere((key, value) => value['sellerID'] != Global.useruid);
-              if (Global.useruid != '') {
+              map.removeWhere((key, value) => value['sellerID'] != uid);
+              if (uid != '') {
                 if(map.values.isNotEmpty) {
                   return GridView.builder(
                       itemCount: map.values.toList().length,
@@ -135,6 +137,7 @@ class _ProductsState extends State<Products> {
                           product_name: map.values.toList()[index]['name'],
                           product_photoURL: map.values.toList()[index]['prodImg'].values.toList()[0]['image'],
                           product_price: map.values.toList()[index]['price'],
+                          product_status: map.values.toList()[index]['status'],
                         );
 
                       });
@@ -152,7 +155,7 @@ class _ProductsState extends State<Products> {
 
           }
           else {
-            return CircularProgressIndicator();
+            return Global.Loading("Loading your listings");
           }
         }
     );
@@ -168,12 +171,14 @@ class single_prod extends StatelessWidget {
   final product_name;
   final product_photoURL;
   final product_price;
+  final product_status;
 
   single_prod({
     this.product_id,
     this.product_name,
     this.product_photoURL,
     this.product_price,
+    this.product_status,
   });
 
   @override
@@ -184,10 +189,11 @@ class single_prod extends StatelessWidget {
         child: Material(
           child: InkWell(
             onTap: () {
+              product_status == "selling" ?
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => ProdDetails(prodID : product_id)),
-              );
+              ) : Global.PopUp(context, "Product Sold", product_name + " is sold");
             },
             child: GridTile(
               footer: Container(
@@ -201,6 +207,7 @@ class single_prod extends StatelessWidget {
                     "RM $product_price",
                     textAlign: TextAlign.right,
                   ),
+                  subtitle: product_status != "selling" ? product_status == null ? null : Text("Sold", style: TextStyle(color: Colors.red),) : Text("Selling" , style: TextStyle(color: Colors.blue),),
                 ),
               ),
               child: Image.network(product_photoURL, fit: BoxFit.cover),

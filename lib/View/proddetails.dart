@@ -3,6 +3,7 @@ import 'package:carousel_pro/carousel_pro.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:secondbuy/Util/Components/util.dart';
 import 'package:secondbuy/Util/Global.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'Chatting.dart';
 import 'main.dart';
@@ -18,8 +19,24 @@ class ProdDetails extends StatefulWidget {
 class _ProductDetailsState extends State<ProdDetails> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  var uid;
+  var i = 0;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
+  void getUserID() async {
+    final FirebaseUser user = await auth.currentUser();
+    if (i == 0) {
+      setState(() {
+        uid = user.uid;
+      });
+      i++;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    getUserID();
+
     return StreamBuilder(
       stream: FirebaseDatabase.instance.reference().child("products").child(widget.prodID).onValue,
       builder: (BuildContext context, AsyncSnapshot<Event> snapshot) {
@@ -252,13 +269,15 @@ class _ProductDetailsState extends State<ProdDetails> {
                         child: OutlineButton(
                           child: Text("Chat"),
                           onPressed: (){
-                            if (map.values.toList()[4].toString() == Global.useruid)
+                            if (map.values.toList()[4].toString() == uid)
                               _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('You are the seller')));
+                            else if(map.values.toList()[15].toString() != 'selling')
+                              _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('The product is sold')));
                             else{
                               Navigator.push(context, MaterialPageRoute(builder: (context) => Chatting(
                                 contactID: map.values.toList()[4].toString(),
-                                contactName: map.values.toList()[7].toString(),
-                                contactPic: "",
+                                contactName: map.values.toList()[2].toString(),
+                                contactPic: "https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg",
                                 prodID: map.values.toList()[12].toString(),)));
                             }
                           },

@@ -7,6 +7,9 @@ import 'package:secondbuy/View/login.dart';
 import 'package:secondbuy/View/main.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:secondbuy/View/review.dart';
+
+import 'MyPurchase.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -163,7 +166,7 @@ class _ProfileState extends State<Profile> {
                       //show purchases
                       if (isUserLogin == true)
                         Container(
-                          child: Text("My Purchases"),
+                          child: MyPurchase(),
                         ),
                       if (isUserLogin == false)
                         Container(
@@ -177,7 +180,7 @@ class _ProfileState extends State<Profile> {
                       //show review
                       if (isUserLogin == true)
                         Container(
-                          child: Text("Reviews"),
+                          child: MyReviews(),
                         ),
                       if (isUserLogin == false)
                         Container(

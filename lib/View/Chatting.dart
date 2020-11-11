@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:intl/intl.dart';
 import 'package:secondbuy/Model/Contact.dart';
 import 'package:secondbuy/Model/Message.dart';
 import 'package:secondbuy/Util/Global.dart';
 import 'package:secondbuy/View/main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Chatting extends StatefulWidget{
   Chatting({Key key, @required this.contactID, @required this.contactName, @required this.contactPic, @required this.prodID}) : super(key : key);
@@ -17,15 +19,31 @@ class Chatting extends StatefulWidget{
 }
 
 class _ChattingState extends State<Chatting> {
-  String messageInput;
   double price;
-  String offerStatus;
+  String messageInput;
+
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final msgController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+  var uid;
+  var i = 0;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
+  void getUserID() async {
+    final FirebaseUser user = await auth.currentUser();
+    if (i == 0) {
+      setState(() {
+        uid = user.uid;
+      });
+      i++;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    getUserID();
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -200,7 +218,7 @@ class _ChattingState extends State<Chatting> {
   }
 
   Future<List<Message>> GetMessage() async{
-    var chatRef = FirebaseDatabase.instance.reference().child("chats").child(Global.useruid).child(widget.contactID);
+    var chatRef = FirebaseDatabase.instance.reference().child("chats").child(uid).child(widget.contactID);
     List<Message> message = new List();
 
     return chatRef.once().then((DataSnapshot snapshot){
@@ -228,8 +246,8 @@ class _ChattingState extends State<Chatting> {
   }
 
   SendMessage(String msg) async{
-    var send = FirebaseDatabase.instance.reference().child("chats").child(Global.useruid).child(widget.contactID);
-    var receive = FirebaseDatabase.instance.reference().child("chats").child(widget.contactID).child(Global.useruid);
+    var send = FirebaseDatabase.instance.reference().child("chats").child(uid).child(widget.contactID);
+    var receive = FirebaseDatabase.instance.reference().child("chats").child(widget.contactID).child(uid);
 
     if(msg != "") {
       send.push().set({
@@ -249,75 +267,132 @@ class _ChattingState extends State<Chatting> {
 
   }
 
-  MakeOffer() {
+  MakeOffer(String productID) {
+    print(productID);
     var offerRef = FirebaseDatabase.instance.reference().child("offer");
+    print("RM " + price.toString());
     offerRef.push().set({
-      'buyer': widget.contactID,
-      'seller' : Global.useruid,
-      'prodID' : widget.prodID,
+      'buyer': uid,
+      'seller' : widget.contactID,
+      'prodID' : productID == null ? widget.prodID : productID,
       'price' : price,
       'status' : 'waiting',
     });
+  }
+
+  ReplyOffer(String choice) {
+    var offerRef = FirebaseDatabase.instance.reference().child("offer");
+    var productRef = FirebaseDatabase.instance.reference().child("products");
+    var userRef = FirebaseDatabase.instance.reference().child("users");
+
+    DateFormat df = DateFormat('yyyy-MM-dd HH:mm:ss');
+    DateTime dateNow = df.parse(DateTime.now().toString());
+
+    offerRef.once().then((DataSnapshot snapshot) {
+      snapshot.value.forEach((key, value) {
+        if(uid == value['seller'] && widget.contactID == value['buyer'] && value['status'] == "waiting" && choice == "accept") {
+
+
+          // update offer status
+          offerRef.child(key).update({
+            'status' : 'accepted'
+          });
+
+          //update user purchase list
+          userRef.child(value['buyer']).child('purchases').push().set({
+            'productID' : value['prodID'],
+          });
+
+          // update product status to sold
+          productRef.child(value['prodID']).update({
+            'status' : 'sold',
+            'purchasedDate' : dateNow.toString(),
+          });
+
+        }
+        else {
+          offerRef.child(key).update({
+            'status' : 'rejected'
+          });
+        }
+      });
+    });
+
   }
 
   ShowOfferWidget() async{
     var offerRef = FirebaseDatabase.instance.reference().child("offer");
     bool isSeller = false;
     bool isBuyer = false;
-    String sellerID;
-    String buyerID;
-    double price;
+    String offerStatus;
+    String productID;
+    double offeredPrice;
 
     await offerRef.once().then((DataSnapshot snapshot) {
-      snapshot.value.forEach((key, value) {
-        if(Global.useruid == value['seller'] && widget.contactID == value['buyer'] && value['status'] == 'waiting'){
-          isSeller = true;
-          sellerID = value['seller'];
-          price = double.parse(value['price'].toString());
-        }
-        else if (Global.useruid == value['buyer'] && widget.contactID == value['seller'] && value['status'] != 'waiting'){
-          isBuyer = true;
-          sellerID = value['seller'];
-          price = double.parse(value['price']);
-        }
-      });
+      if(snapshot.value == null) {
+        print("No snapshot value");
+      }
+      else {
+        snapshot.value.forEach((key, value) {
+          if(uid == value['seller'] && widget.contactID == value['buyer'] && value['status'] == 'waiting'){
+            isSeller = true;
+            productID = value['prodID'];
+            offeredPrice = double.parse(value['price'].toString());
+          }
+          else if (uid == value['buyer'] && widget.contactID == value['seller']){
+            isBuyer = true;
+            productID = value['prodID'];
+            offerStatus = value['status'];
+            offeredPrice = double.parse(value['price'].toString());
+          }
+        });
+      }
     });
 
+    print(isSeller.toString() + isBuyer.toString());
+
     showModalBottomSheet(context: context, builder: (BuildContext builder) {
-      if(widget.prodID == null) {
+      if ((widget.prodID == null || widget.prodID == "") && isBuyer == false && isSeller == false) {
         return Container(
           height: MediaQuery.of(context).size.height * 0.8,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.minimize),
-                    iconSize: 25,
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      IconButton(
+                        icon: Icon(Icons.minimize),
+                        iconSize: 25,
+                      ),
+                      Icon(
+                        Icons.error,
+                        size: 30,
+                        color: Colors.red,
+                      ),
+                      SizedBox(
+                        height:10,
+                      ),
+                      Text(
+                        "No product is selected. No offer is received at the moment",
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
-                  Icon(
-                    Icons.error,
-                    size: 30,
-                    color: Colors.red,
-                  ),
-                  SizedBox(
-                    height:10,
-                  ),
-                  Text(
-                    "You have not selected any product",
-                    style: TextStyle(
-                      fontSize: 20,
-                    ),
-                  ),
-                ],
+                ),
               ),
             ],
           ),
         );
       }
-      else{
+      else if (widget.prodID != "" && widget.prodID != null || (isSeller == false && isBuyer == true) || (isSeller == true && isBuyer == false)){
         if(isSeller == true && isBuyer == false){
           return Container(
             height: MediaQuery.of(context).size.height * 0.8,
@@ -340,7 +415,7 @@ class _ChattingState extends State<Chatting> {
                             shrinkWrap: true,
                             children: <Widget>[
                               Text(
-                                  "Seller has offered RM " + price.toString() + " for the product",
+                                  "Seller has offered RM " + offeredPrice.toString() + " for the product",
                               ),
                               SizedBox(
                                 height: 20,
@@ -349,6 +424,7 @@ class _ChattingState extends State<Chatting> {
                                 child: Text("Accept"),
                                 onPressed: (){
                                   _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('You accepted the offer')));
+                                  ReplyOffer("accept");
                                 },
                                 shape: new RoundedRectangleBorder(
                                     borderRadius:
@@ -363,6 +439,7 @@ class _ChattingState extends State<Chatting> {
                                 child: Text("Reject"),
                                 onPressed: (){
                                   _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('You rejected the offer')));
+                                  ReplyOffer("reject");
                                 },
                                 shape: new RoundedRectangleBorder(
                                     borderRadius:
@@ -436,13 +513,21 @@ class _ChattingState extends State<Chatting> {
                                 ),
                               ),
                               OutlineButton(
-                                child: Text("Sell Now"),
+                                child: Text("Offer Now"),
                                 onPressed: (){
                                   if (_formKey.currentState.validate()) {
-                                    _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Price is sent to seller')));
-                                    print(_formKey.currentState.validate());
-                                    _formKey.currentState.save();
-                                    MakeOffer();
+                                    if(offerStatus == "rejected" || offerStatus == null){
+                                      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Price is sent to seller')));
+                                      print(_formKey.currentState.validate());
+                                      _formKey.currentState.save();
+                                      MakeOffer(productID);
+                                    }
+                                    else if (offerStatus == "accepted") {
+                                      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Seller already accepted your offer')));
+                                    }
+                                    else {
+                                      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Please wait for reply')));
+                                    }
                                   }
                                   else{
                                     print(_formKey.currentState.validate());
@@ -468,7 +553,46 @@ class _ChattingState extends State<Chatting> {
             ),
           );
         }
-
+      }
+      else{
+        return Container(
+          height: MediaQuery.of(context).size.height * 0.8,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      IconButton(
+                        icon: Icon(Icons.minimize),
+                        iconSize: 25,
+                      ),
+                      Icon(
+                        Icons.error,
+                        size: 30,
+                        color: Colors.red,
+                      ),
+                      SizedBox(
+                        height:10,
+                      ),
+                      Text(
+                        "You have not selected any product",
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
       }
 
     },isScrollControlled: true);

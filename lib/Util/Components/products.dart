@@ -23,49 +23,120 @@ class _ProductsState extends State<Products> {
 
   @override
   Widget build(BuildContext context) {
-    print("==> " + widget.sellerProd.toString());
     return StreamBuilder(
         stream: FirebaseDatabase.instance.reference().child("products").onValue,
         builder: (BuildContext context, AsyncSnapshot<Event> snapshot) {
           if (snapshot.hasData) {
             Map<dynamic, dynamic> map = snapshot.data.snapshot.value;
 
-            if (widget.sellerProd == null) {
-              return GridView.builder(
-                  itemCount: map.values.toList().length,
-                  gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                  ),
-                  itemBuilder: (BuildContext context, int index) {
-                    return single_prod(
-                      product_id: map.values.toList()[index]['id'],
-                      product_name: map.values.toList()[index]['name'],
-                      product_photoURL: map.values.toList()[index]['prodImg'].values.toList()[0]['image'],
-                      product_price: map.values.toList()[index]['price'],
-                    );
-                  });
+            if (widget.sellerProd == null && widget.subCategory == null && widget.category == null) { //Show all Product
+              map.removeWhere((key, value) => value['status'] != "selling");
+              if (map.values.isNotEmpty) {
+                return GridView.builder(
+                    itemCount: map.values.toList().length,
+                    gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                    ),
+                    itemBuilder: (BuildContext context, int index) {
+                      return single_prod(
+                        product_id: map.values.toList()[index]['id'],
+                        product_name: map.values.toList()[index]['name'],
+                        product_photoURL: map.values.toList()[index]['prodImg'].values.toList()[0]['image'],
+                        product_price: map.values.toList()[index]['price'],
+                      );
+                    });
+              }
+              else {
+                return Card (
+                  child: Global.Message("Product not found", 20, Icons.error, 30, Colors.red),
+                );
+              }
+
             }
-            else{
-              return GridView.builder(
-                  //itemCount: map.values.toList().length,
-                itemCount: map.values.toList().where((element) => element['sellerID'] == Global.useruid).length,
-                  gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                  ),
-                  itemBuilder: (BuildContext context, int index) {
-                    print(Global.useruid);
-                    return single_prod(
-                      product_id: map.values.toList()[index]['id'],
-                      product_name: map.values.toList()[index]['name'],
-                      product_photoURL: map.values.toList()[index]['prodImg'].values.toList()[0]['image'],
-                      product_price: map.values.toList()[index]['price'],
-                    );
-                  });
+            else if (widget.category != '') { //category
+              print("Category = " + widget.category);
+              map.removeWhere((key, value) => value['category'] != widget.category.toString());
+              if (map.values.isNotEmpty) {
+                return GridView.builder(
+                    itemCount: map.values.toList().length,
+                    gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                    ),
+                    itemBuilder: (BuildContext context, int index) {
+                      return single_prod(
+                        product_id: map.values.toList()[index]['id'],
+                        product_name: map.values.toList()[index]['name'],
+                        product_photoURL: map.values.toList()[index]['prodImg'].values.toList()[0]['image'],
+                        product_price: map.values.toList()[index]['price'],
+                      );
+                    });
+              }
+              else {
+                return Card (
+                  child: Global.Message("Product not found", 20, Icons.info, 30, Colors.red),
+                );
+              }
+
+            }
+            else if (widget.subCategory != '') {  //subcategory
+              print("Subcategory = " + widget.subCategory);
+              map.removeWhere((key, value) => value['subcategory'] != widget.subCategory);
+              if (map.values.isNotEmpty) {
+                return GridView.builder(
+                    itemCount: map.values.toList().length,
+                    gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                    ),
+                    itemBuilder: (BuildContext context, int index) {
+                      return single_prod(
+                        product_id: map.values.toList()[index]['id'],
+                        product_name: map.values.toList()[index]['name'],
+                        product_photoURL: map.values.toList()[index]['prodImg'].values.toList()[0]['image'],
+                        product_price: map.values.toList()[index]['price'],
+                      );
+                    });
+              }
+              else {
+                return Card (
+                  child: Global.Message("Product not found", 20, Icons.info, 30, Colors.red),
+                );
+              }
+
+            }
+            else{ // Listings
+              map.removeWhere((key, value) => value['sellerID'] != Global.useruid);
+              if (Global.useruid != '') {
+                if(map.values.isNotEmpty) {
+                  return GridView.builder(
+                      itemCount: map.values.toList().length,
+                      shrinkWrap: true,
+                      gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                      ),
+                      itemBuilder: (BuildContext context, int index) {
+                        return single_prod(
+                          product_id: map.values.toList()[index]['id'],
+                          product_name: map.values.toList()[index]['name'],
+                          product_photoURL: map.values.toList()[index]['prodImg'].values.toList()[0]['image'],
+                          product_price: map.values.toList()[index]['price'],
+                        );
+
+                      });
+                }
+                else {
+                  return Global.Message("Your Listing is Empty", 20, Icons.info, 30, Colors.blue);
+                }
+
+              }
+              else {
+                return Global.Message("Your Listings is empty", 20, Icons.info, 30, Colors.blue);
+              }
+
             }
 
           }
           else {
-            return CircularProgressIndicator();
+            return Global.Loading("Loading products");
           }
         }
     );
@@ -124,8 +195,6 @@ class single_prod extends StatelessWidget {
       ),
     );
   }
-
-
 }
 
 

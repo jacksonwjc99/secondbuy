@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:secondbuy/Util/Components/products.dart';
 import 'package:secondbuy/Util/Global.dart';
+import 'package:secondbuy/View/MyPurchase.dart';
 
 import 'package:secondbuy/View/login.dart';
+import 'package:secondbuy/View/review.dart';
 
 
 
@@ -122,10 +124,10 @@ class _ProfileState extends State<Profile>{
                         child: Products(category: "", subCategory: "", sellerProd : true),
                       ),
                       Container(
-                        child: Text("My Purchases"),
+                        child: MyPurchase(),
                       ),
                       Container(
-                        child: Text("Reviews"),
+                        child: MyReviews(),
                       ),
                     ]),
                   ),

@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 import 'DB.dart';
 class Global {
   static Random _rnd = Random();
   static const _chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
   static String useruid = "";
+  static String username = "";
 
   static Future<dynamic> getUserDetails() async {
     FirebaseAuth auth = FirebaseAuth.instance;
@@ -38,4 +40,53 @@ class Global {
   static String generateRandomString(int length) => String.fromCharCodes(Iterable.generate(
     length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))
   ));
+
+  static Widget Loading(String text) {
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              CircularProgressIndicator(),
+              SizedBox(
+                height:10,
+              ),
+              Text(text),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  static Widget Message(String text, double textSize, IconData icon, double iconSize, Color iconColor) {
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                icon,
+                size: iconSize,
+                color: iconColor,
+              ),
+              SizedBox(
+                height:10,
+              ),
+              Text(
+                text,
+                style: TextStyle(
+                  fontSize: textSize,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }

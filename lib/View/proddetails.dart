@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:secondbuy/Util/Components/util.dart';
+import 'package:secondbuy/Util/Global.dart';
 
+import 'Chatting.dart';
 import 'main.dart';
 
 class ProdDetails extends StatefulWidget {
@@ -13,6 +16,8 @@ class ProdDetails extends StatefulWidget {
 }
 
 class _ProductDetailsState extends State<ProdDetails> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -41,30 +46,27 @@ class _ProductDetailsState extends State<ProdDetails> {
 
           //0 - image id
           //1 - address
-          //2 - rating
-          //3 - sellerName
-          //4 - condition
-          //5 - sellerID
-          //6 - dealopt
-          //7 - price
-          //8 review
-          //9 - name
-          //10 - purchasedDate
-          //11 - details
-          //12 - fav
-          //13 - locaiton
-          //14 - sellDate
-          //15 - prodID
-          //16 - category
-          //17 - reply
-          //18 - subcategory
-          //19 - status
+          //2 - sellerName
+          //3 - condition
+          //4 - sellerID
+          //5 - dealopt
+          //6 - price
+          //7 - name
+          //8 - details
+          //9 - fav
+          //10 - location
+          //11 - sellDate
+          //12 - prodID
+          //13 - category
+          //14 - subcategory
+          //15 - status
 
           return Scaffold(
+            key: _scaffoldKey,
             appBar: AppBar(
               backgroundColor: Colors.white,
               title: Text(
-                map.values.toList()[9],
+                map.values.toList()[7],
                 style: TextStyle(
                   color: Colors.black,
                 ),
@@ -115,7 +117,7 @@ class _ProductDetailsState extends State<ProdDetails> {
                             padding: const EdgeInsets.only(left: 30.0),
                             width: c_width,
                             child: new Text(
-                              map.values.toList()[9],
+                              map.values.toList()[7],
                             ),
                           ),
                           SizedBox(height: 30.0),
@@ -131,7 +133,7 @@ class _ProductDetailsState extends State<ProdDetails> {
                             padding: const EdgeInsets.only(left: 30.0),
                             width: c_width,
                             child: new Text(
-                              map.values.toList()[7].toString(),
+                              map.values.toList()[6].toString(),
                             ),
                           ),
                           SizedBox(height: 30.0),
@@ -147,7 +149,7 @@ class _ProductDetailsState extends State<ProdDetails> {
                             padding: const EdgeInsets.only(left: 30.0),
                             width: c_width,
                             child: new Text(
-                              'Just Now',
+                              Util.timeSinceSet(map.values.toList()[11].toString()),
                               style: TextStyle(fontStyle: FontStyle.italic),
                             ),
                           ),
@@ -164,7 +166,7 @@ class _ProductDetailsState extends State<ProdDetails> {
                             padding: const EdgeInsets.only(left: 30.0),
                             width: c_width,
                             child: new Text(
-                              map.values.toList()[4].toString(),
+                              map.values.toList()[3].toString(),
                             ),
                           ),
                           SizedBox(height: 30.0),
@@ -180,7 +182,7 @@ class _ProductDetailsState extends State<ProdDetails> {
                             padding: const EdgeInsets.only(left: 30.0),
                             width: c_width,
                             child: new Text(
-                              map.values.toList()[11].toString(),
+                              map.values.toList()[8].toString(),
                               textAlign: TextAlign.justify,
                             ),
                           ),
@@ -206,7 +208,7 @@ class _ProductDetailsState extends State<ProdDetails> {
                             padding: const EdgeInsets.only(left: 30.0),
                             width: c_width,
                             child: new Text(
-                                map.values.toList()[6].toString() + " at " + map.values.toList()[1].toString(),
+                                map.values.toList()[5].toString() == "delivery" ? map.values.toList()[5].toString()  : map.values.toList()[5].toString() + " at " + map.values.toList()[1].toString(),
                             ),
                           ),
                           SizedBox(height: 30.0),
@@ -231,7 +233,7 @@ class _ProductDetailsState extends State<ProdDetails> {
                             padding: const EdgeInsets.only(left: 30.0),
                             width: c_width,
                             child: new Text(
-                              map.values.toList()[3].toString(),
+                              map.values.toList()[2].toString(),
                             ),
                           ),
                           SizedBox(height: 20.0),
@@ -249,7 +251,17 @@ class _ProductDetailsState extends State<ProdDetails> {
                       Expanded(
                         child: OutlineButton(
                           child: Text("Chat"),
-                          onPressed: (){},
+                          onPressed: (){
+                            if (map.values.toList()[4].toString() == Global.useruid)
+                              _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('You are the seller')));
+                            else{
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => Chatting(
+                                contactID: map.values.toList()[4].toString(),
+                                contactName: map.values.toList()[7].toString(),
+                                contactPic: "",
+                                prodID: map.values.toList()[12].toString(),)));
+                            }
+                          },
                           shape: new RoundedRectangleBorder(
                               borderRadius:
                               new BorderRadius.circular(

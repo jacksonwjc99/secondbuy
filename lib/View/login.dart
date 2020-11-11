@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:secondbuy/Util/Global.dart';
 import 'package:secondbuy/View/forgotPassword.dart';
+import 'package:secondbuy/View/home.dart';
 import 'package:secondbuy/View/main.dart';
 import 'package:secondbuy/View/signup.dart';
 
@@ -35,8 +36,13 @@ class _LoginPageSate extends State<LoginPage> {
           .then((user) {
         print("signed in as ${"user.uid"}");
         Global.useruid = user.user.uid;
+        Global.username = user.user.displayName;
         print("!!!!!!" + Global.useruid);
-        Navigator.of(context).pushReplacementNamed('/carry');
+        //Navigator.of(context).pushReplacementNamed('/carry');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Homepage()),
+        );
       }).catchError((e) {
         print(e);
       });

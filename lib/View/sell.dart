@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -288,8 +289,8 @@ class _SellState extends State<Sell> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sell'),
-      ),
+      title: Text('Sell'),
+    ),
       body: ListView (
         shrinkWrap: true,
         children: <Widget>[
@@ -696,7 +697,7 @@ class _SellState extends State<Sell> {
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 20.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
       ),
-      maxLines: 20,
+      maxLines: 10,
       obscureText: bool,
       validator: (value) => value.isEmpty ? valMsg : null,
       onSaved: save,
@@ -713,13 +714,11 @@ class _SellState extends State<Sell> {
 
     //getting seller location
     var sellerLocation;
-    userDb.once().then((DataSnapshot snapshot) {
+    await userDb.once().then((DataSnapshot snapshot){
       Map<dynamic, dynamic> seller = snapshot.value;
-      seller.forEach((key, value) {sellerLocation = value['location'];});
+      sellerLocation = seller['address'];
     });
 
-    print("Starts here");
-    print("PRODUCT NAME " + prodName);
 
     //upload Image
     String imgURL;
@@ -728,27 +727,30 @@ class _SellState extends State<Sell> {
     ).then((image) => imgURL = image.link);
 
     print("Image link here : " + imgURL);
+    DateFormat df = DateFormat('yyyy-MM-dd HH:mm:ss');
+    DateTime dateNow = df.parse(DateTime.now().toString());
+
 
     //uploading product
 
     await productDb.set({
       'name' : prodName,
       'price' : prodPrice,
-      'details' : prodDetails,
+      'details' : prodDetails.trim(),
       'fav' : 0,
       'id' : id,
       'dealopt' : _radioValue,
       'condition' : _radioValue2,
       'location' : sellerLocation,
-      'sellDate' : DateTime.now().toString(),
+      'sellDate' : dateNow.toString(),
       'sellerID' : user.uid,
       'sellerName' : user.displayName,
       'address' : address,
       'category' : category,
-      'subCategory' : subCategory,
+      'subcategory' : subCategory,
       'status' : 'selling',
     });
-
+    print("end");
     //uploading product images
     await productDb.child('prodImg').push().set({
       'image' : imgURL,

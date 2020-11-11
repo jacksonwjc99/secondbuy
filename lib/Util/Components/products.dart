@@ -20,9 +20,25 @@ class Products extends StatefulWidget {
 class _ProductsState extends State<Products> {
   var productList = [];
   var imageList = [];
+  var uid;
+  var i = 0;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
+  void getUserID() async {
+    final FirebaseUser user = await auth.currentUser();
+    if (i == 0) {
+      setState(() {
+        uid = user.uid;
+      });
+      i++;
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
+    getUserID();
+    //print("==> " + widget.sellerProd.toString());
     return StreamBuilder(
         stream: FirebaseDatabase.instance.reference().child("products").onValue,
         builder: (BuildContext context, AsyncSnapshot<Event> snapshot) {
@@ -136,7 +152,7 @@ class _ProductsState extends State<Products> {
 
           }
           else {
-            return Global.Loading("Loading products");
+            return CircularProgressIndicator();
           }
         }
     );
@@ -195,6 +211,8 @@ class single_prod extends StatelessWidget {
       ),
     );
   }
+
+
 }
 
 

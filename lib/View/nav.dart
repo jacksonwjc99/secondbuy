@@ -6,6 +6,9 @@ import 'package:secondbuy/View/chat.dart';
 
 
 class Nav extends StatefulWidget {
+  Nav({Key key, this.page}) : super(key: key);
+  String page;
+
   @override
   State<StatefulWidget> createState() {
     return _HomeState();
@@ -14,7 +17,21 @@ class Nav extends StatefulWidget {
 
 class _HomeState extends State<Nav> {
   int _currentIndex = 0;
+
   final List<Widget> _children = [Homepage(), Chat(), Sell(), Profile()];
+
+  void checkPage(){
+    if(widget.page == "Homepage"){
+      onTabTapped(0);
+    }else if(widget.page == "Chat"){
+      onTabTapped(1);
+    }else if(widget.page == "Sell"){
+      onTabTapped(2);
+    }else if(widget.page == "Profile"){
+      onTabTapped(3);
+    }
+    widget.page = null;
+  }
 
   void onTabTapped(int index) {
     setState(() {
@@ -24,6 +41,10 @@ class _HomeState extends State<Nav> {
 
   @override
   Widget build(BuildContext context) {
+    if(widget.page != null){
+      checkPage();
+    }
+
     return Scaffold(
       body: _children[_currentIndex],
       // new

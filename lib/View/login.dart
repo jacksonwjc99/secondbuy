@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:secondbuy/Util/Global.dart';
 import 'package:secondbuy/View/forgotPassword.dart';
-import 'package:secondbuy/View/home.dart';
 import 'package:secondbuy/View/main.dart';
 import 'package:secondbuy/View/signup.dart';
 
@@ -29,22 +28,25 @@ class _LoginPageSate extends State<LoginPage> {
     return false;
   }
 
+  bool isValid = false;
+
   LoginUser() {
     if (checkFields()) {
       FirebaseAuth.instance
           .signInWithEmailAndPassword(email: _email, password: _password)
           .then((user) {
-        print("signed in as ${"user.uid"}");
+        print("signed in as ${user.user.uid}");
         Global.useruid = user.user.uid;
-        Global.username = user.user.displayName;
         print("!!!!!!" + Global.useruid);
-        //Navigator.of(context).pushReplacementNamed('/carry');
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Homepage()),
+          MaterialPageRoute(builder: (context) => App()),
         );
       }).catchError((e) {
         print(e);
+        setState(() {
+          isValid = true;
+        });
       });
     }
   }
@@ -98,17 +100,23 @@ class _LoginPageSate extends State<LoginPage> {
                       width: 20.0,
                       height: 10.0,
                     ),
-                    _input("required email", false, "Email",
-                        'Enter your Email', (value) => _email = value),
+                    if (isValid == true)
+                      Text(
+                        "Invalid Email or Password",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    SizedBox(
+                      width: 20.0,
+                      height: 10.0,
+                    ),
+                    _input("required email", false, "Email", 'Enter your Email',
+                        (value) => _email = value),
                     SizedBox(
                       width: 20.0,
                       height: 10.0,
                     ),
                     _input("required password", true, "Password", 'Password',
                         (value) => _password = value),
-
-
-
                     new Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Center(
@@ -133,8 +141,7 @@ class _LoginPageSate extends State<LoginPage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                ForgotPass()),
+                                            builder: (context) => ForgotPass()),
                                       );
                                     },
                                   )
@@ -149,8 +156,7 @@ class _LoginPageSate extends State<LoginPage> {
                                       onPressed: LoginUser,
                                       shape: new RoundedRectangleBorder(
                                           borderRadius:
-                                              new BorderRadius.circular(
-                                                  30.0)),
+                                              new BorderRadius.circular(30.0)),
                                       borderSide: BorderSide(
                                         style: BorderStyle.solid,
                                         width: 1,
@@ -192,8 +198,7 @@ class _LoginPageSate extends State<LoginPage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                SignUpPage()),
+                                            builder: (context) => SignUpPage()),
                                       );
                                     },
                                   )

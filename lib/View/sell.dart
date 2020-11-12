@@ -9,6 +9,7 @@ import 'package:imgur/imgur.dart' as imgur;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:secondbuy/Util/Global.dart';
+import 'package:secondbuy/View/login.dart';
 import 'package:secondbuy/View/signup.dart';
 
 class Sell extends StatefulWidget {
@@ -273,8 +274,31 @@ class _SellState extends State<Sell> {
   //condition
   String _radioValue2 = "new";
 
+  var isUserLogin = false;
+  var i = 0;
+
   @override
   Widget build(BuildContext context) {
+
+    auth.currentUser().then((user) {
+      if (user != null) {
+        if (i == 0) {
+          Global.getDBUser().then((dbUser) {
+            if (dbUser != null) {
+              print("user is logged in");
+              setState(() {
+                isUserLogin = true;
+              });
+            }
+          });
+          i++;
+        }
+      } else {
+        print("guest detected");
+        isUserLogin = false;
+      }
+    });
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -284,7 +308,12 @@ class _SellState extends State<Sell> {
       body: ListView(
         shrinkWrap: true,
         children: <Widget>[
-          Center(
+
+          if(isUserLogin == false)
+            notLogin(),
+
+          if(isUserLogin == true)
+            Center(
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: Center(
@@ -448,6 +477,25 @@ class _SellState extends State<Sell> {
 //      _error = error;
 //    });
 //  }
+
+  Widget notLogin() {
+    return Container(
+      margin: const EdgeInsets.only(top: 250.0),
+      child: InkWell(
+        child: Text(
+          "Login now to view more",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontStyle: FontStyle.italic, fontSize: 25),
+        ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => LoginPage()),
+          );
+        },
+      ),
+    );
+  }
 
   // Creating widgets for form
 

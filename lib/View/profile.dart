@@ -160,42 +160,24 @@ class _ProfileState extends State<Profile> {
                               category: "", subCategory: "", sellerProd: true),
                         ),
                       if (isUserLogin == false)
-                        Container(
-                          margin: const EdgeInsets.only(top: 200.0),
-                          child: Text(
-                            "Login now to view more",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontStyle: FontStyle.italic, fontSize: 25),
-                          ),
-                        ),
+                        notLogin(),
+
                       //show purchases
                       if (isUserLogin == true)
                         Container(
                           child: Text("My Purchases"),
                         ),
                       if (isUserLogin == false)
-                        Container(
-                          margin: const EdgeInsets.only(top: 200.0),
-                          child: Text(
-                            "Login now to view more",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontStyle: FontStyle.italic, fontSize: 25),
-                          ),
-                        ),
+                        notLogin(),
+
                       //show review
                       if (isUserLogin == true)
                         Container(
                           child: Text("Reviews"),
                         ),
                       if (isUserLogin == false)
-                        Container(
-                          margin: const EdgeInsets.only(top: 200.0),
-                          child: Text(
-                            "Login now to view more",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontStyle: FontStyle.italic, fontSize: 25),
-                          ),
-                        ),
+                        notLogin(),
+
                       //show about
                       if (isUserLogin == true)
                         Container(
@@ -211,6 +193,25 @@ class _ProfileState extends State<Profile> {
           if (isUserLogin == true) userProfilePic(),
           if (isUserLogin == false) guestProfilePic(),
         ],
+      ),
+    );
+  }
+
+  Widget notLogin() {
+    return Container(
+      margin: const EdgeInsets.only(top: 200.0),
+      child: InkWell(
+        child: Text(
+          "Login now to view more",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontStyle: FontStyle.italic, fontSize: 25),
+        ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => LoginPage()),
+          );
+        },
       ),
     );
   }

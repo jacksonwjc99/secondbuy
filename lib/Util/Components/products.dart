@@ -189,7 +189,7 @@ class single_prod extends StatelessWidget {
         child: Material(
           child: InkWell(
             onTap: () {
-              product_status == "selling" ?
+              product_status != "selling" ?
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => ProdDetails(prodID : product_id)),

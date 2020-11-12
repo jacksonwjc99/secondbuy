@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:async/async.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -275,24 +276,27 @@ class _SellState extends State<Sell> {
   //condition
   String _radioValue2 = "new";
 
+  final AsyncMemoizer _memoizer = AsyncMemoizer();
   Future<dynamic> getData() async {
     try {
       final FirebaseUser user = await auth.currentUser();
-      return FirebaseDatabase.instance
-          .reference()
-          .child("users")
-          .child(user.uid)
-          .once()
-          .then((DataSnapshot snapshot) {
-        Map<dynamic, dynamic> userDB = snapshot.value;
-
-        return userDB["id"];
-      });
+      //return this._memoizer.runOnce(() async {
+        //await Future.delayed(Duration(seconds: 2));
+        return FirebaseDatabase.instance
+            .reference()
+            .child("users")
+            .child(user.uid)
+            .once()
+            .then((DataSnapshot snapshot) {
+          Map<dynamic, dynamic> userDB = snapshot.value;
+          return userDB["id"];
+        });
+    //  });
     } catch (e) {
       print(e);
     }
   }
-
+  var i = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -308,12 +312,17 @@ class _SellState extends State<Sell> {
           future: getData(),
           // Must return type Future, eg. Future<User> getUser()
           builder: (BuildContext context, AsyncSnapshot snapshot) {
+            String id = snapshot.data;
             // If data still loading
-            if (snapshot.connectionState != ConnectionState.done) {
-              // Return loading symbol
-              return Global.Loading("Loading...");
+            if(i == 0){
+              if (snapshot.connectionState != ConnectionState.done) {
+                // Return loading symbol
+                i++;
+                return Global.Loading("Loading...");
+              }
             }
 
+            print(id);
             // If no data
             if (!snapshot.hasData) {
               print("guest detected");

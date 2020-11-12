@@ -77,6 +77,13 @@ class _SignupPageSate extends State<SignUpPage> {
             email: _email, password: _password);
         final FirebaseUser user = result.user;
 
+        //update displayName
+        UserUpdateInfo updateUser = UserUpdateInfo();
+        updateUser.displayName = _username;
+        updateUser.photoUrl =
+        "https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg";
+        user.updateProfile(updateUser);
+
         final userRef = FirebaseDatabase().reference()
             .child("users")
             .child(user.uid);

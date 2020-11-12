@@ -24,7 +24,6 @@ class _ProductDetailsState extends State<ProdDetails> {
   var i = 0;
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-
   void getUserID() async {
     final FirebaseUser user = await auth.currentUser();
     if (i == 0) {
@@ -96,17 +95,20 @@ class _ProductDetailsState extends State<ProdDetails> {
                   ),
                 ),
                 actions: <Widget>[
-                  map.values.toList()[4] == uid ?
-                  IconButton(
-                    icon: Icon(Icons.edit),
-                    color:Colors.black,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => EditProduct(productID : widget.prodID)),
-                      );
-                    },
-                  ) : Container(),
+                  map.values.toList()[4] == uid
+                      ? IconButton(
+                          icon: Icon(Icons.edit),
+                          color: Colors.black,
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      EditProduct(productID: widget.prodID)),
+                            );
+                          },
+                        )
+                      : Container(),
                 ],
                 centerTitle: true,
                 elevation: 0,
@@ -296,17 +298,19 @@ class _ProductDetailsState extends State<ProdDetails> {
                                   color: Colors.black,
                                 ),
                                 onPressed: () async {
-                                  bool isFav = await FavProduct(map.values.toList()[12].toString(), map.values.toList()[9]);
+                                  bool isFav = await FavProduct(
+                                      map.values.toList()[12].toString(),
+                                      map.values.toList()[9]);
                                   print("FAVOURITED " + isFav.toString());
-                                  if(isFav == true) {
+                                  if (isFav == true) {
                                     _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                        content: Text('You have unfavourited this product')));
-                                  }
-                                  else {
+                                        content: Text(
+                                            'You have unfavourited this product')));
+                                  } else {
                                     _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                        content: Text('You have favourited this product')));
+                                        content: Text(
+                                            'You have favourited this product')));
                                   }
-
                                 })),
                         Expanded(
                           child: OutlineButton(
@@ -364,18 +368,18 @@ class _ProductDetailsState extends State<ProdDetails> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => Chatting(
-                                          contactID: map.values
-                                              .toList()[4]
-                                              .toString(),
-                                          contactName: map.values
-                                              .toList()[2]
-                                              .toString(),
-                                          contactPic:
-                                          "https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg",
-                                          prodID: map.values
-                                              .toList()[12]
-                                              .toString(),
-                                        )));
+                                              contactID: map.values
+                                                  .toList()[4]
+                                                  .toString(),
+                                              contactName: map.values
+                                                  .toList()[2]
+                                                  .toString(),
+                                              contactPic:
+                                                  "https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg",
+                                              prodID: map.values
+                                                  .toList()[12]
+                                                  .toString(),
+                                            )));
                               }
                             },
                             shape: new RoundedRectangleBorder(
@@ -400,9 +404,16 @@ class _ProductDetailsState extends State<ProdDetails> {
         });
   }
 
-  Future<bool> FavProduct(String productId, int favCount) async{
-    var favRef = FirebaseDatabase.instance.reference().child("users").child(uid).child("favItem");
-    var productRef = FirebaseDatabase.instance.reference().child("products").child(productId);
+  Future<bool> FavProduct(String productId, int favCount) async {
+    var favRef = FirebaseDatabase.instance
+        .reference()
+        .child("users")
+        .child(uid)
+        .child("favItem");
+    var productRef = FirebaseDatabase.instance
+        .reference()
+        .child("products")
+        .child(productId);
     bool isDuplicate = false;
     String keyToDelete;
 
@@ -414,42 +425,40 @@ class _ProductDetailsState extends State<ProdDetails> {
             keyToDelete = key;
           }
         });
-      }
-      else { // if not fav list found, directly add to favourite
+      } else {
+        // if not fav list found, directly add to favourite
         productRef.update({
-          'fav' : favCount + 1,
+          'fav': favCount + 1,
         });
 
         favRef.push().set({
-          'id' : productId,
+          'id': productId,
         });
       }
 
       // check if fav item is exist when tapped on the fav icon
-      if (isDuplicate == true) { //duplicated fav item = --fav
+      if (isDuplicate == true) {
+        //duplicated fav item = --fav
         productRef.update({
-          'fav' : favCount - 1,
+          'fav': favCount - 1,
         });
 
         favRef.child(keyToDelete).remove();
-
-      }
-      else { // non duplicate = ++ fav
+      } else {
+        // non duplicate = ++ fav
         productRef.update({
-          'fav' : favCount + 1,
+          'fav': favCount + 1,
         });
 
         favRef.push().set({
-          'id' : productId,
+          'id': productId,
         });
-
       }
     });
 
-    if(isDuplicate == true)
+    if (isDuplicate == true)
       return true;
     else
       return false;
   }
-
 }

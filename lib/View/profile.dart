@@ -67,7 +67,7 @@ class _ProfileState extends State<Profile> {
       print(e);
     }
   }
-
+  var i = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,90 +76,12 @@ class _ProfileState extends State<Profile> {
           // Must return type Future, eg. Future<User> getUser()
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             // If data still loading
-            if (snapshot.connectionState != ConnectionState.done) {
-              return new Stack(
-                children: <Widget>[
-                  DefaultTabController(
-                    length: 3,
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          height: 90,
-                          color: Colors.black26,
-                        ),
-
-                        Container(
-                          height: 100,
-                          color: Colors.black12,
-                          child: Stack(
-                            children: <Widget>[],
-                          ),
-                        ),
-
-                        //tab bar
-                        Container(
-                          constraints: BoxConstraints.expand(height: 50),
-                          child: TabBar(
-                              labelColor: Colors.black87,
-                              unselectedLabelColor: Colors.grey,
-                              tabs: [
-                                Tab(
-                                  text: "Listings",
-                                ),
-                                Tab(
-                                  text: "Purchases",
-                                ),
-                                Tab(
-                                  text: "Reviews",
-                                ),
-                              ]),
-                        ),
-
-                        //content
-                        Expanded(
-                          child: Container(
-                            child: TabBarView(children: [
-                              //show listing
-                              Container(
-                                child: Global.Loading("Loading..."),
-                              ),
-                              //show purchases
-                              Container(
-                                child: Global.Loading("Loading..."),
-                              ),
-
-                              //show review
-                              Container(
-                                child: Global.Loading("Loading..."),
-                              ),
-
-                              //show about
-                            ]),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    top: 40.0,
-                    // (background container size) - (circle height / 2)
-                    left: 20,
-                    child: Container(
-                      height: 80.0,
-                      width: 80.0,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: NetworkImage(
-                                "https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg"),
-                            fit: BoxFit.fill,
-                          ),
-                          shape: BoxShape.circle,
-                          color: Colors.white,
-                          border: Border.all(color: Colors.black45, width: 2)),
-                    ),
-                  ),
-                ],
-              );
+            if(i == 0){
+              if (snapshot.connectionState != ConnectionState.done) {
+                // Return loading symbol
+                i++;
+                return Global.Loading("Loading...");
+              }
             }
 
             // If no data

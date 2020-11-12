@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:secondbuy/Model/Contact.dart';
 import 'package:secondbuy/Model/Message.dart';
 import 'package:secondbuy/Util/Global.dart';
-import 'package:secondbuy/View/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Chatting extends StatefulWidget{

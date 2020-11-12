@@ -8,7 +8,6 @@ import 'package:secondbuy/View/editProduct.dart';
 import 'package:secondbuy/View/nav.dart';
 
 import 'Chatting.dart';
-import 'main.dart';
 
 class ProdDetails extends StatefulWidget {
   ProdDetails({Key key, @required this.prodID}) : super(key: key);

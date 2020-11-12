@@ -3,19 +3,20 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+
 //import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:imgur/imgur.dart' as imgur;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:secondbuy/Util/Global.dart';
+import 'package:secondbuy/View/login.dart';
 import 'package:secondbuy/View/signup.dart';
 
 class Sell extends StatefulWidget {
-    _SellState createState() => _SellState();
+  _SellState createState() => _SellState();
 }
 
 class _SellState extends State<Sell> {
-
   @override
   void initState() {
     super.initState();
@@ -27,10 +28,12 @@ class _SellState extends State<Sell> {
 
   //images upload variables
   File _image;
+
   //List<Asset> images = List<Asset>();
 
   final picker = ImagePicker();
-  final client = imgur.Imgur(imgur.Authentication.fromClientId('e91a824722e23b9'));
+  final client =
+      imgur.Imgur(imgur.Authentication.fromClientId('e91a824722e23b9'));
 
   //input variables
   String prodName;
@@ -49,76 +52,75 @@ class _SellState extends State<Sell> {
   List<DropdownMenuItem<String>> menuItems = List();
 
   final electronics = {
-    "1" : "Computers and Laptops",
-    "2" : "Audio",
-    "3" : "TV and Entertainment Systems",
-    "4" : "Computer Parts and Accessories",
-    "5" : "Home Appliances",
-    "6" : "Others"
+    "1": "Computers and Laptops",
+    "2": "Audio",
+    "3": "TV and Entertainment Systems",
+    "4": "Computer Parts and Accessories",
+    "5": "Home Appliances",
+    "6": "Others"
   };
 
   final mobile = {
-    "1" : "Mobile Phones",
-    "2" : "Tablets",
-    "3" : "Wearables",
-    "4" : "Others",
+    "1": "Mobile Phones",
+    "2": "Tablets",
+    "3": "Wearables",
+    "4": "Others",
   };
 
   final women = {
-    "1" : "Bags and Wallets",
-    "2" : "Shoes",
-    "3" : "Clothes",
-    "4" : "Accessories",
-    "5" : "Others",
+    "1": "Bags and Wallets",
+    "2": "Shoes",
+    "3": "Clothes",
+    "4": "Accessories",
+    "5": "Others",
   };
 
   final men = {
-    "1" : "Bags and Wallets",
-    "2" : "Footwear",
-    "3" : "Clothes",
-    "4" : "Accessories",
-    "5" : "Others",
+    "1": "Bags and Wallets",
+    "2": "Footwear",
+    "3": "Clothes",
+    "4": "Accessories",
+    "5": "Others",
   };
 
   final furniture = {
-    "1" : "Home Decor",
-    "2" : "Furniture",
-    "3" : "Others",
+    "1": "Home Decor",
+    "2": "Furniture",
+    "3": "Others",
   };
 
   final stationery = {
-    "1" : "Comics and Manga",
-    "2" : "Magazines",
-    "3" : "Education Books",
-    "4" : "Others",
+    "1": "Comics and Manga",
+    "2": "Magazines",
+    "3": "Education Books",
+    "4": "Others",
   };
 
   final toysgames = {
-    "1" : "Board Games and Cards",
-    "2" : "Action Figures and Collectibles",
-    "3" : "Others",
+    "1": "Board Games and Cards",
+    "2": "Action Figures and Collectibles",
+    "3": "Others",
   };
 
   final tickets = {
-    "1" : "Event Tickets",
+    "1": "Event Tickets",
   };
 
   final sports = {
-    "1" : "Sports Equipment",
-    "2" : "Bicycles",
-    "3" : "Others",
+    "1": "Sports Equipment",
+    "2": "Bicycles",
+    "3": "Others",
   };
 
   final vehicles = {
-    "1" : "Cars",
-    "2" : "Motorcycles",
+    "1": "Cars",
+    "2": "Motorcycles",
   };
 
   final property = {
-    "1" : "Rentals",
-    "2" : "For Sale",
+    "1": "Rentals",
+    "2": "For Sale",
   };
-
 
   void populateElectronics() {
     for (String key in electronics.keys) {
@@ -130,7 +132,6 @@ class _SellState extends State<Sell> {
   }
 
   void populateMobile() {
-
     for (String key in mobile.keys) {
       menuItems.add(DropdownMenuItem<String>(
         value: mobile[key],
@@ -221,47 +222,37 @@ class _SellState extends State<Sell> {
   }
 
   void valueChanged(_value) {
-    if(_value == "electronics"){
+    if (_value == "electronics") {
       menuItems = [];
       populateElectronics();
-    }
-    else if (_value == "mobile") {
+    } else if (_value == "mobile") {
       menuItems = [];
       populateMobile();
-    }
-    else if (_value == "women") {
+    } else if (_value == "women") {
       menuItems = [];
       populateWomen();
-    }
-    else if (_value == "men") {
+    } else if (_value == "men") {
       menuItems = [];
       populateMen();
-    }
-    else if (_value == "furniture") {
+    } else if (_value == "furniture") {
       menuItems = [];
       populateFurniture();
-    }
-    else if (_value == "stationery") {
+    } else if (_value == "stationery") {
       menuItems = [];
       populateStationery();
-    }
-    else if (_value == "toysgames") {
+    } else if (_value == "toysgames") {
       menuItems = [];
       populateToysGames();
-    }
-    else if (_value == "tickets") {
+    } else if (_value == "tickets") {
       menuItems = [];
       populateTickets();
-    }
-    else if (_value == "sports") {
+    } else if (_value == "sports") {
       menuItems = [];
       populateSports();
-    }
-    else if (_value == "vehicles") {
+    } else if (_value == "vehicles") {
       menuItems = [];
       populateVehicles();
-    }
-    else if (_value == "property") {
+    } else if (_value == "property") {
       menuItems = [];
       populateProperty();
     }
@@ -283,37 +274,71 @@ class _SellState extends State<Sell> {
   //condition
   String _radioValue2 = "new";
 
-
+  var isUserLogin = false;
+  var i = 0;
 
   @override
   Widget build(BuildContext context) {
+
+    auth.currentUser().then((user) {
+      if (user != null) {
+        if (i == 0) {
+          Global.getDBUser().then((dbUser) {
+            if (dbUser != null) {
+              print("user is logged in");
+              setState(() {
+                isUserLogin = true;
+              });
+            }
+          });
+          i++;
+        }
+      } else {
+        print("guest detected");
+        isUserLogin = false;
+      }
+    });
+
     return Scaffold(
       appBar: AppBar(
-      title: Text('Sell'),
-    ),
-      body: ListView (
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        title: Text('Sell', style: TextStyle(color: Colors.black),),
+      ),
+      body: ListView(
         shrinkWrap: true,
         children: <Widget>[
-          Center(
+
+          if(isUserLogin == false)
+            notLogin(),
+
+          if(isUserLogin == true)
+            Center(
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: Center(
                 child: Form(
                   key: _formKey,
-                  child: ListView (
+                  child: ListView(
                     shrinkWrap: true,
                     children: <Widget>[
                       Container(
-                        child:  //buildGridView(),
-                        _image == null? Text ('No image is selected') : Image.file(_image),
+                        child: //buildGridView(),
+                            _image == null
+                                ? Text('No image is selected')
+                                : Image.file(_image),
                       ),
                       ImageButton(),
                       SizedBox(
                         width: 20.0,
                         height: 10.0,
                       ),
-                      InputField("Product Name is required", false, "Product Name",
-                          'Product Name', (value) => prodName = value),
+                      InputField(
+                          "Product Name is required",
+                          false,
+                          "Product Name",
+                          'Product Name',
+                          (value) => prodName = value),
                       SizedBox(
                         width: 20.0,
                         height: 20.0,
@@ -328,12 +353,22 @@ class _SellState extends State<Sell> {
                         width: 20.0,
                         height: 20.0,
                       ),
-                      NumberField("Product Price is required", false, "Product Price", "Product Price", (value) => prodPrice = double.parse(value)),
+                      NumberField(
+                          "Product Price is required",
+                          false,
+                          "Product Price",
+                          "Product Price",
+                          (value) => prodPrice = double.parse(value)),
                       SizedBox(
                         width: 20.0,
                         height: 20.0,
                       ),
-                      TextArea("Product Details is required", false, "Product Details", "Product Details", (value) => prodDetails = value),
+                      TextArea(
+                          "Product Details is required",
+                          false,
+                          "Product Details",
+                          "Product Details",
+                          (value) => prodDetails = value),
                       SizedBox(
                         width: 20.0,
                         height: 10.0,
@@ -344,7 +379,12 @@ class _SellState extends State<Sell> {
                         height: 10.0,
                       ),
                       DealOption(),
-                      AddressField("Meetup Address is required", false, "Meetup Address", "Meetup Address", (value) => address = value),
+                      AddressField(
+                          "Meetup Address is required",
+                          false,
+                          "Meetup Address",
+                          "Meetup Address",
+                          (value) => address = value),
                       SizedBox(
                         width: 20.0,
                         height: 10.0,
@@ -354,21 +394,20 @@ class _SellState extends State<Sell> {
                           Expanded(
                             child: OutlineButton(
                               child: Text("Sell Now"),
-                              onPressed: (){
+                              onPressed: () {
                                 if (_formKey.currentState.validate()) {
-                                  Scaffold.of(context).showSnackBar(SnackBar(content: Text('Uploading your Product')));
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                      content: Text('Uploading your Product')));
                                   print(_formKey.currentState.validate());
                                   _formKey.currentState.save();
                                   UploadingProduct();
-                                }
-                                else{
+                                } else {
                                   print(_formKey.currentState.validate());
                                 }
                               },
                               shape: new RoundedRectangleBorder(
                                   borderRadius:
-                                  new BorderRadius.circular(
-                                      30.0)),
+                                      new BorderRadius.circular(30.0)),
                               borderSide: BorderSide(
                                 style: BorderStyle.solid,
                                 width: 1,
@@ -439,6 +478,24 @@ class _SellState extends State<Sell> {
 //    });
 //  }
 
+  Widget notLogin() {
+    return Container(
+      margin: const EdgeInsets.only(top: 250.0),
+      child: InkWell(
+        child: Text(
+          "Login now to view more",
+          textAlign: TextAlign.center,
+          style: TextStyle(fontStyle: FontStyle.italic, fontSize: 25),
+        ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => LoginPage()),
+          );
+        },
+      ),
+    );
+  }
 
   // Creating widgets for form
 
@@ -448,13 +505,11 @@ class _SellState extends State<Sell> {
         Expanded(
           child: OutlineButton(
             child: Text("Upload Image"),
-            onPressed: (){
+            onPressed: () {
               getImage();
             },
             shape: new RoundedRectangleBorder(
-                borderRadius:
-                new BorderRadius.circular(
-                    30.0)),
+                borderRadius: new BorderRadius.circular(30.0)),
             borderSide: BorderSide(
               style: BorderStyle.solid,
               width: 1,
@@ -466,7 +521,7 @@ class _SellState extends State<Sell> {
     );
   }
 
-  Widget InputField(String valMsg, bool, String label, String hint, save){
+  Widget InputField(String valMsg, bool, String label, String hint, save) {
     return new TextFormField(
       decoration: InputDecoration(
         hintText: hint,
@@ -480,7 +535,7 @@ class _SellState extends State<Sell> {
     );
   }
 
-  Widget AddressField(String valMsg, bool, String label, String hint, save){
+  Widget AddressField(String valMsg, bool, String label, String hint, save) {
     return new TextFormField(
       decoration: InputDecoration(
         enabled: _radioValue == "meetup" ? true : false,
@@ -490,12 +545,13 @@ class _SellState extends State<Sell> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
       ),
       obscureText: bool,
-      validator: (value) =>  value.isEmpty && _radioValue == "meetup" ? valMsg : null,
+      validator: (value) =>
+          value.isEmpty && _radioValue == "meetup" ? valMsg : null,
       onSaved: save,
     );
   }
 
-  Widget NumberField(String valMsg, bool, String label, String hint, save){
+  Widget NumberField(String valMsg, bool, String label, String hint, save) {
     return new TextFormField(
       decoration: InputDecoration(
         hintText: hint,
@@ -504,19 +560,22 @@ class _SellState extends State<Sell> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
       ),
       keyboardType: TextInputType.number,
-      inputFormatters: <TextInputFormatter>[WhitelistingTextInputFormatter.digitsOnly],
+      inputFormatters: <TextInputFormatter>[
+        WhitelistingTextInputFormatter.digitsOnly
+      ],
       obscureText: bool,
       validator: (value) => value.isEmpty ? valMsg : null,
       onSaved: save,
     );
   }
 
-  Widget CategoryDropDown(String valMsg){
+  Widget CategoryDropDown(String valMsg) {
     return Container(
       decoration: ShapeDecoration(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20.0)),
-          side: BorderSide(width: 1.0, style: BorderStyle.solid, color: Colors.grey),
+          side: BorderSide(
+              width: 1.0, style: BorderStyle.solid, color: Colors.grey),
         ),
       ),
       child: Padding(
@@ -529,7 +588,10 @@ class _SellState extends State<Sell> {
               "Select a category",
             ),
             value: category,
-              onChanged: (_value) => (){subCategory = null; valueChanged(_value);}(),
+            onChanged: (_value) => () {
+              subCategory = null;
+              valueChanged(_value);
+            }(),
             items: [
               DropdownMenuItem<String>(
                 value: "electronics",
@@ -576,18 +638,19 @@ class _SellState extends State<Sell> {
                 child: Text("Property"),
               ),
             ],
-            ),
+          ),
         ),
       ),
     );
   }
 
-  Widget SubCategoryDropDown(String valMsg){
+  Widget SubCategoryDropDown(String valMsg) {
     return Container(
       decoration: ShapeDecoration(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20.0)),
-          side: BorderSide(width: 1.0, style: BorderStyle.solid, color: Colors.grey),
+          side: BorderSide(
+              width: 1.0, style: BorderStyle.solid, color: Colors.grey),
         ),
       ),
       child: Padding(
@@ -596,14 +659,14 @@ class _SellState extends State<Sell> {
           child: DropdownButtonFormField<String>(
             validator: (value) => value == null ? valMsg : null,
             //isExpanded: false,
-            hint: Text(
-              "Select a category"
-            ),
+            hint: Text("Select a category"),
             disabledHint: Text(
               "Select category first",
             ),
             value: subCategory,
-            onChanged: disabledDropdown ? null : (_value) => secondValueChanged(_value),
+            onChanged: disabledDropdown
+                ? null
+                : (_value) => secondValueChanged(_value),
             items: menuItems,
           ),
         ),
@@ -623,7 +686,6 @@ class _SellState extends State<Sell> {
           'Meetup',
           style: new TextStyle(fontSize: 16.0),
         ),
-
         new Radio(
           value: "delivery",
           groupValue: _radioValue,
@@ -649,7 +711,6 @@ class _SellState extends State<Sell> {
           'New',
           style: new TextStyle(fontSize: 16.0),
         ),
-
         new Radio(
           value: "old",
           groupValue: _radioValue2,
@@ -704,60 +765,57 @@ class _SellState extends State<Sell> {
     );
   }
 
-
   // adding product to firebase
-  Future<FirebaseUser> UploadingProduct () async {
+  Future<FirebaseUser> UploadingProduct() async {
     String id = Global.generateRandomString(8);
     final FirebaseUser user = await auth.currentUser();
-    var productDb = FirebaseDatabase.instance.reference().child("products").child(id);
-    var userDb = FirebaseDatabase.instance.reference().child("users").child(user.uid);
+    var productDb =
+        FirebaseDatabase.instance.reference().child("products").child(id);
+    var userDb =
+        FirebaseDatabase.instance.reference().child("users").child(user.uid);
 
     //getting seller location
     var sellerLocation;
-    await userDb.once().then((DataSnapshot snapshot){
+    await userDb.once().then((DataSnapshot snapshot) {
       Map<dynamic, dynamic> seller = snapshot.value;
       sellerLocation = seller['address'];
     });
 
-
     //upload Image
     String imgURL;
-    await client.image.uploadImage(
-      imageFile: _image,
-    ).then((image) => imgURL = image.link);
+    await client.image
+        .uploadImage(
+          imageFile: _image,
+        )
+        .then((image) => imgURL = image.link);
 
     print("Image link here : " + imgURL);
     DateFormat df = DateFormat('yyyy-MM-dd HH:mm:ss');
     DateTime dateNow = df.parse(DateTime.now().toString());
 
-
     //uploading product
 
     await productDb.set({
-      'name' : prodName,
-      'price' : prodPrice,
-      'details' : prodDetails.trim(),
-      'fav' : 0,
-      'id' : id,
-      'dealopt' : _radioValue,
-      'condition' : _radioValue2,
-      'location' : sellerLocation,
-      'sellDate' : dateNow.toString(),
-      'sellerID' : user.uid,
-      'sellerName' : user.displayName,
-      'address' : address,
-      'category' : category,
-      'subcategory' : subCategory,
-      'status' : 'selling',
+      'name': prodName,
+      'price': prodPrice,
+      'details': prodDetails.trim(),
+      'fav': 0,
+      'id': id,
+      'dealopt': _radioValue,
+      'condition': _radioValue2,
+      'location': sellerLocation,
+      'sellDate': dateNow.toString(),
+      'sellerID': user.uid,
+      'sellerName': user.displayName,
+      'address': address,
+      'category': category,
+      'subcategory': subCategory,
+      'status': 'selling',
     });
     print("end");
     //uploading product images
     await productDb.child('prodImg').push().set({
-      'image' : imgURL,
+      'image': imgURL,
     });
   }
-
 }
-
-
-

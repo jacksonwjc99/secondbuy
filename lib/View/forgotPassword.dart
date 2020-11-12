@@ -24,8 +24,6 @@ class _FgtPassPageSate extends State<ForgotPass> {
     return false;
   }
 
-  bool isValid;
-
   ResetPassword() {
     if (checkFields()) {
       FirebaseAuth.instance.sendPasswordResetEmail(email: _email).then((user) {

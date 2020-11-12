@@ -1,16 +1,16 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:secondbuy/Util/Global.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:secondbuy/View/reviewDetail.dart';
+import 'package:secondbuy/View/proddetails.dart';
 
-class MyPurchase extends StatefulWidget {
-
+class FavList extends StatefulWidget {
   @override
-  _MyPurchaseState createState() => _MyPurchaseState();
+  _FavListState createState() => _FavListState();
 }
 
-class _MyPurchaseState extends State<MyPurchase> {
+class _FavListState extends State<FavList> {
   var uid;
   var i = 0;
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -29,20 +29,20 @@ class _MyPurchaseState extends State<MyPurchase> {
   Widget build(BuildContext context) {
     getUserID();
 
-    return Container(
-      child: FutureBuilder<List<String>>(
-        future: getPurchaseList(),
-        builder: (BuildContext context, AsyncSnapshot reviewListSnapshot) {
-          if (reviewListSnapshot.connectionState != ConnectionState.done)
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Favourite List"),
+      ),
+      body: FutureBuilder<List<String>>(
+        future: getFavouriteList(),
+        builder: (BuildContext context, AsyncSnapshot favListSnapshot) {
+          if (favListSnapshot.connectionState != ConnectionState.done)
             return Global.Loading("Loading");
-          print(reviewListSnapshot.data);
-          if (reviewListSnapshot.data.isEmpty) {
-            return Global.Message(
-                "You haven't purchase anything", 20, Icons.info, 30,
-                Colors.blue);
+
+          if(favListSnapshot.data.isEmpty) {
+            return Global.Message("Your Favourite List is empty", 20, Icons.info, 30, Colors.blue);
           }
-          else {
-            //Purchase list not empty
+          else{
             return StreamBuilder(
                 stream: FirebaseDatabase.instance
                     .reference()
@@ -53,11 +53,13 @@ class _MyPurchaseState extends State<MyPurchase> {
                     Map<dynamic, dynamic> map = snapshot.data.snapshot.value;
                     //remove any product that is not purchased by the buyer
                     map.removeWhere((key, value) =>
-                    !reviewListSnapshot.data.toString().contains(value['id']));
+                    !favListSnapshot.data.toString().contains(value['id']));
 
-                    //remove any product that is not in review status
-                    map.removeWhere((key, value) =>
-                        value['status'].toString().contains("selling"));
+                    FirebaseDatabase.instance
+                        .reference()
+                        .child("products").onChildChanged.listen((event) {setState(() {
+
+                        });});
 
 
                     if (map.values.isNotEmpty) {
@@ -106,51 +108,30 @@ class _MyPurchaseState extends State<MyPurchase> {
     );
   }
 
-  //Load purchase List
-  Future<List<String>> getPurchaseList() async {
-    var purchaseDb = FirebaseDatabase.instance.reference().child("users").child(uid).child("purchases");
+  Future<List<String>> getFavouriteList() async {
+    var purchaseDb = FirebaseDatabase.instance.reference().child("users").child(uid).child("favItem");
 
     return purchaseDb.once().then((DataSnapshot snapshot) {
-      List<String> purchaseList = new List();
+      List<String> favList = new List();
 
       if(snapshot.value != null) {
         try{
           snapshot.value.forEach((key, value) {
             Map<dynamic, dynamic> purchases = value;
-            purchaseList.add(purchases.values.toList()[0]);
+            favList.add(purchases.values.toList()[0]);
           });
 
         } on NoSuchMethodError catch (e) {
           print(e.stackTrace);
         }
-        return new List.from(purchaseList);
+        return new List.from(favList);
       }
       else {
-        return new List.from(purchaseList);
+        return new List.from(favList);
       }
 
     });
   }
-
-  Widget ReviewListButton() {
-    return Container(
-      child: OutlineButton(
-        child: Text("Sell Now"),
-        onPressed: (){
-
-        },
-        shape: new RoundedRectangleBorder(
-            borderRadius:
-            new BorderRadius.circular(
-                30.0)),
-        borderSide: BorderSide(
-          style: BorderStyle.solid,
-          width: 1,
-        ),
-      ),
-    );
-  }
-
 }
 
 // Product widget
@@ -186,7 +167,7 @@ class single_prod extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ReviewItem(prodID : product_id, prodName: product_name, prodPic: product_photoURL, prodStatus: product_status, prodReview: product_review, prodPrice: double.parse(product_price.toString()), prodRating: int.parse(product_rating == null? 3.toString() : product_rating),)),
+                MaterialPageRoute(builder: (context) => ProdDetails(prodID : product_id)),
               );
             },
             child: Padding(
@@ -194,11 +175,11 @@ class single_prod extends StatelessWidget {
               child: Container(
                 child: Row (
                   mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Image.network(product_photoURL, fit: BoxFit.cover, height: 100, width: 100,),
                     SizedBox(
-                      width:10,
+                      width: 10,
                     ),
                     Flexible(
                       child: Column(
@@ -211,9 +192,11 @@ class single_prod extends StatelessWidget {
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
                           Text(
-                            product_review == null? "You have not review the product yet" : product_review,
+                            "RM " + product_price.toString(),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -222,6 +205,9 @@ class single_prod extends StatelessWidget {
                           ),
                         ],
                       ),
+                    ),
+                    SizedBox(
+                      width: 20,
                     ),
                   ],
                 ),
@@ -234,8 +220,5 @@ class single_prod extends StatelessWidget {
   }
 
 }
-
-
-
 
 

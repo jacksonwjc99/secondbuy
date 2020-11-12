@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:secondbuy/Util/Components/util.dart';
 import 'package:secondbuy/Util/Global.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:secondbuy/View/editProduct.dart';
 import 'package:secondbuy/View/nav.dart';
 
 import 'Chatting.dart';
@@ -23,6 +24,7 @@ class _ProductDetailsState extends State<ProdDetails> {
   var uid;
   var i = 0;
   final FirebaseAuth auth = FirebaseAuth.instance;
+
 
   void getUserID() async {
     final FirebaseUser user = await auth.currentUser();
@@ -94,6 +96,19 @@ class _ProductDetailsState extends State<ProdDetails> {
                     color: Colors.black,
                   ),
                 ),
+                actions: <Widget>[
+                  map.values.toList()[4] == uid ?
+                  IconButton(
+                    icon: Icon(Icons.edit),
+                    color:Colors.black,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => EditProduct(productID : widget.prodID)),
+                      );
+                    },
+                  ) : Container(),
+                ],
                 centerTitle: true,
                 elevation: 0,
                 automaticallyImplyLeading: true,
@@ -281,7 +296,19 @@ class _ProductDetailsState extends State<ProdDetails> {
                                   Icons.favorite_border,
                                   color: Colors.black,
                                 ),
-                                onPressed: () {})),
+                                onPressed: () async {
+                                  bool isFav = await FavProduct(map.values.toList()[12].toString(), map.values.toList()[9]);
+                                  print("FAVOURITED " + isFav.toString());
+                                  if(isFav == true) {
+                                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                        content: Text('You have unfavourited this product')));
+                                  }
+                                  else {
+                                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                        content: Text('You have favourited this product')));
+                                  }
+
+                                })),
                         Expanded(
                           child: OutlineButton(
                             child: Text("Chat"),
@@ -325,7 +352,33 @@ class _ProductDetailsState extends State<ProdDetails> {
                         Expanded(
                           child: OutlineButton(
                             child: Text("Make Offers"),
-                            onPressed: () {},
+                            onPressed: () {
+                              if (map.values.toList()[4].toString() == uid)
+                                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                    content: Text('You are the seller')));
+                              else if (map.values.toList()[15].toString() !=
+                                  'selling')
+                                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                    content: Text('The product is sold')));
+                              else {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Chatting(
+                                          contactID: map.values
+                                              .toList()[4]
+                                              .toString(),
+                                          contactName: map.values
+                                              .toList()[2]
+                                              .toString(),
+                                          contactPic:
+                                          "https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg",
+                                          prodID: map.values
+                                              .toList()[12]
+                                              .toString(),
+                                        )));
+                              }
+                            },
                             shape: new RoundedRectangleBorder(
                                 borderRadius: new BorderRadius.circular(30.0)),
                             borderSide: BorderSide(
@@ -347,4 +400,57 @@ class _ProductDetailsState extends State<ProdDetails> {
           }
         });
   }
+
+  Future<bool> FavProduct(String productId, int favCount) async{
+    var favRef = FirebaseDatabase.instance.reference().child("users").child(uid).child("favItem");
+    var productRef = FirebaseDatabase.instance.reference().child("products").child(productId);
+    bool isDuplicate = false;
+    String keyToDelete;
+
+    await favRef.once().then((DataSnapshot snapshot) {
+      if (snapshot.value != null) {
+        snapshot.value.forEach((key, value) {
+          if (value['id'] == productId) {
+            isDuplicate = true;
+            keyToDelete = key;
+          }
+        });
+      }
+      else { // if not fav list found, directly add to favourite
+        productRef.update({
+          'fav' : favCount + 1,
+        });
+
+        favRef.push().set({
+          'id' : productId,
+        });
+      }
+
+      // check if fav item is exist when tapped on the fav icon
+      if (isDuplicate == true) { //duplicated fav item = --fav
+        productRef.update({
+          'fav' : favCount - 1,
+        });
+
+        favRef.child(keyToDelete).remove();
+
+      }
+      else { // non duplicate = ++ fav
+        productRef.update({
+          'fav' : favCount + 1,
+        });
+
+        favRef.push().set({
+          'id' : productId,
+        });
+
+      }
+    });
+
+    if(isDuplicate == true)
+      return true;
+    else
+      return false;
+  }
+
 }

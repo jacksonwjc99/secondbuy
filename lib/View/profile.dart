@@ -3,11 +3,14 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:secondbuy/Util/Components/about.dart';
 import 'package:secondbuy/Util/Components/products.dart';
 import 'package:secondbuy/Util/Global.dart';
+import 'package:secondbuy/View/FavList.dart';
+import 'package:secondbuy/View/MyPurchase.dart';
 import 'package:secondbuy/View/editProfile.dart';
 import 'package:secondbuy/View/login.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:secondbuy/View/nav.dart';
+import 'package:secondbuy/View/review.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -116,7 +119,12 @@ class _ProfileState extends State<Profile> {
                                 Icons.favorite_border,
                                 color: Colors.black,
                               ),
-                              onPressed: () {})),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => FavList()),
+                                );
+                              })),
                     ],
                   ),
                 ),
@@ -165,7 +173,7 @@ class _ProfileState extends State<Profile> {
                       //show purchases
                       if (isUserLogin == true)
                         Container(
-                          child: Text("My Purchases"),
+                          child: MyPurchase(),
                         ),
                       if (isUserLogin == false)
                         notLogin(),
@@ -173,7 +181,7 @@ class _ProfileState extends State<Profile> {
                       //show review
                       if (isUserLogin == true)
                         Container(
-                          child: Text("Reviews"),
+                          child: MyReviews(),
                         ),
                       if (isUserLogin == false)
                         notLogin(),

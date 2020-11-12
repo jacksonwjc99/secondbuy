@@ -43,9 +43,9 @@ class _ProductsState extends State<Products> {
     return StreamBuilder(
         stream: FirebaseDatabase.instance.reference().child("products").onValue,
         builder: (BuildContext context, AsyncSnapshot<Event> snapshot) {
+
           if (snapshot.hasData) {
             Map<dynamic, dynamic> map = snapshot.data.snapshot.value;
-
             if (widget.sellerProd == null && widget.subCategory == null && widget.category == null) { //Show all Product
               map.removeWhere((key, value) => value['status'] != "selling");
 
@@ -61,6 +61,7 @@ class _ProductsState extends State<Products> {
                         product_name: map.values.toList()[index]['name'],
                         product_photoURL: map.values.toList()[index]['prodImg'].values.toList()[0]['image'],
                         product_price: map.values.toList()[index]['price'],
+                        product_status: map.values.toList()[index]['status'],
                       );
                     });
               }
@@ -86,6 +87,7 @@ class _ProductsState extends State<Products> {
                         product_name: map.values.toList()[index]['name'],
                         product_photoURL: map.values.toList()[index]['prodImg'].values.toList()[0]['image'],
                         product_price: map.values.toList()[index]['price'],
+                        product_status: map.values.toList()[index]['status'],
                       );
                     });
               }
@@ -111,6 +113,7 @@ class _ProductsState extends State<Products> {
                         product_name: map.values.toList()[index]['name'],
                         product_photoURL: map.values.toList()[index]['prodImg'].values.toList()[0]['image'],
                         product_price: map.values.toList()[index]['price'],
+                        product_status: map.values.toList()[index]['status'],
                       );
                     });
               }
@@ -189,7 +192,7 @@ class single_prod extends StatelessWidget {
         child: Material(
           child: InkWell(
             onTap: () {
-              product_status != "selling" ?
+              product_status == "selling" ?
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => ProdDetails(prodID : product_id)),

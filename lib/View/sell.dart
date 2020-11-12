@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:imgur/imgur.dart' as imgur;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:secondbuy/Model/User.dart';
 import 'package:secondbuy/Util/Global.dart';
 import 'package:secondbuy/View/login.dart';
 import 'package:secondbuy/View/signup.dart';
@@ -274,157 +275,190 @@ class _SellState extends State<Sell> {
   //condition
   String _radioValue2 = "new";
 
-  var isUserLogin = false;
-  var i = 0;
+  Future<dynamic> getData() async {
+    try {
+      final FirebaseUser user = await auth.currentUser();
+      return FirebaseDatabase.instance
+          .reference()
+          .child("users")
+          .child(user.uid)
+          .once()
+          .then((DataSnapshot snapshot) {
+        Map<dynamic, dynamic> userDB = snapshot.value;
+
+        return userDB["id"];
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    auth.currentUser().then((user) {
-      if (user != null) {
-        if (i == 0) {
-          Global.getDBUser().then((dbUser) {
-            if (dbUser != null) {
-              print("user is logged in");
-              setState(() {
-                isUserLogin = true;
-              });
-            }
-          });
-          i++;
-        }
-      } else {
-        print("guest detected");
-        isUserLogin = false;
-      }
-    });
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
-        title: Text('Sell', style: TextStyle(color: Colors.black),),
+        title: Text(
+          'Sell',
+          style: TextStyle(color: Colors.black),
+        ),
       ),
-      body: ListView(
-        shrinkWrap: true,
-        children: <Widget>[
+      body: FutureBuilder(
+          future: getData(),
+          // Must return type Future, eg. Future<User> getUser()
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            // If data still loading
+            if (snapshot.connectionState != ConnectionState.done) {
+              // Return loading symbol
+              return Global.Loading("Loading...");
+            }
 
-          if(isUserLogin == false)
-            notLogin(),
-
-          if(isUserLogin == true)
-            Center(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Center(
-                child: Form(
-                  key: _formKey,
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: <Widget>[
-                      Container(
-                        child: //buildGridView(),
-                            _image == null
-                                ? Text('No image is selected')
-                                : Image.file(_image),
-                      ),
-                      ImageButton(),
-                      SizedBox(
-                        width: 20.0,
-                        height: 10.0,
-                      ),
-                      InputField(
-                          "Product Name is required",
-                          false,
-                          "Product Name",
-                          'Product Name',
-                          (value) => prodName = value),
-                      SizedBox(
-                        width: 20.0,
-                        height: 20.0,
-                      ),
-                      CategoryDropDown("Please select a category"),
-                      SizedBox(
-                        width: 20.0,
-                        height: 20.0,
-                      ),
-                      SubCategoryDropDown("Please select a subcategory"),
-                      SizedBox(
-                        width: 20.0,
-                        height: 20.0,
-                      ),
-                      NumberField(
-                          "Product Price is required",
-                          false,
-                          "Product Price",
-                          "Product Price",
-                          (value) => prodPrice = double.parse(value)),
-                      SizedBox(
-                        width: 20.0,
-                        height: 20.0,
-                      ),
-                      TextArea(
-                          "Product Details is required",
-                          false,
-                          "Product Details",
-                          "Product Details",
-                          (value) => prodDetails = value),
-                      SizedBox(
-                        width: 20.0,
-                        height: 10.0,
-                      ),
-                      Condition(),
-                      SizedBox(
-                        width: 20.0,
-                        height: 10.0,
-                      ),
-                      DealOption(),
-                      AddressField(
-                          "Meetup Address is required",
-                          false,
-                          "Meetup Address",
-                          "Meetup Address",
-                          (value) => address = value),
-                      SizedBox(
-                        width: 20.0,
-                        height: 10.0,
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: OutlineButton(
-                              child: Text("Sell Now"),
-                              onPressed: () {
-                                if (_formKey.currentState.validate()) {
-                                  Scaffold.of(context).showSnackBar(SnackBar(
-                                      content: Text('Uploading your Product')));
-                                  print(_formKey.currentState.validate());
-                                  _formKey.currentState.save();
-                                  UploadingProduct();
-                                } else {
-                                  print(_formKey.currentState.validate());
-                                }
-                              },
-                              shape: new RoundedRectangleBorder(
-                                  borderRadius:
-                                      new BorderRadius.circular(30.0)),
-                              borderSide: BorderSide(
-                                style: BorderStyle.solid,
-                                width: 1,
-                              ),
-                            ),
-                            flex: 1,
-                          ),
-                        ],
-                      ),
-                    ],
+            // If no data
+            if (!snapshot.hasData) {
+              print("guest detected");
+              return new Center(
+                child: Container(
+                  margin: const EdgeInsets.only(top: 0.0),
+                  child: InkWell(
+                    child: Text(
+                      "Login now to view more",
+                      textAlign: TextAlign.center,
+                      style:
+                          TextStyle(fontStyle: FontStyle.italic, fontSize: 25),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                      );
+                    },
                   ),
                 ),
-              ),
-            ),
-          ),
-        ],
-      ),
+              );
+            }
+
+            // If got data
+            print("user is logged in");
+            // Display here
+            return new ListView(
+              shrinkWrap: true,
+              children: <Widget>[
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Center(
+                      child: Form(
+                        key: _formKey,
+                        child: ListView(
+                          shrinkWrap: true,
+                          children: <Widget>[
+                            Container(
+                              child: //buildGridView(),
+                                  _image == null
+                                      ? Text('No image is selected')
+                                      : Image.file(_image),
+                            ),
+                            ImageButton(),
+                            SizedBox(
+                              width: 20.0,
+                              height: 10.0,
+                            ),
+                            InputField(
+                                "Product Name is required",
+                                false,
+                                "Product Name",
+                                'Product Name',
+                                (value) => prodName = value),
+                            SizedBox(
+                              width: 20.0,
+                              height: 20.0,
+                            ),
+                            CategoryDropDown("Please select a category"),
+                            SizedBox(
+                              width: 20.0,
+                              height: 20.0,
+                            ),
+                            SubCategoryDropDown("Please select a subcategory"),
+                            SizedBox(
+                              width: 20.0,
+                              height: 20.0,
+                            ),
+                            NumberField(
+                                "Product Price is required",
+                                false,
+                                "Product Price",
+                                "Product Price",
+                                (value) => prodPrice = double.parse(value)),
+                            SizedBox(
+                              width: 20.0,
+                              height: 20.0,
+                            ),
+                            TextArea(
+                                "Product Details is required",
+                                false,
+                                "Product Details",
+                                "Product Details",
+                                (value) => prodDetails = value),
+                            SizedBox(
+                              width: 20.0,
+                              height: 10.0,
+                            ),
+                            Condition(),
+                            SizedBox(
+                              width: 20.0,
+                              height: 10.0,
+                            ),
+                            DealOption(),
+                            AddressField(
+                                "Meetup Address is required",
+                                false,
+                                "Meetup Address",
+                                "Meetup Address",
+                                (value) => address = value),
+                            SizedBox(
+                              width: 20.0,
+                              height: 10.0,
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Expanded(
+                                  child: OutlineButton(
+                                    child: Text("Sell Now"),
+                                    onPressed: () {
+                                      if (_formKey.currentState.validate()) {
+                                        Scaffold.of(context).showSnackBar(
+                                            SnackBar(
+                                                content: Text(
+                                                    'Uploading your Product')));
+                                        print(_formKey.currentState.validate());
+                                        _formKey.currentState.save();
+                                        UploadingProduct();
+                                      } else {
+                                        print(_formKey.currentState.validate());
+                                      }
+                                    },
+                                    shape: new RoundedRectangleBorder(
+                                        borderRadius:
+                                            new BorderRadius.circular(30.0)),
+                                    borderSide: BorderSide(
+                                      style: BorderStyle.solid,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  flex: 1,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }),
     );
   }
 
@@ -477,25 +511,6 @@ class _SellState extends State<Sell> {
 //      _error = error;
 //    });
 //  }
-
-  Widget notLogin() {
-    return Container(
-      margin: const EdgeInsets.only(top: 250.0),
-      child: InkWell(
-        child: Text(
-          "Login now to view more",
-          textAlign: TextAlign.center,
-          style: TextStyle(fontStyle: FontStyle.italic, fontSize: 25),
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => LoginPage()),
-          );
-        },
-      ),
-    );
-  }
 
   // Creating widgets for form
 

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:secondbuy/Util/Global.dart';
+import 'package:secondbuy/View/nav.dart';
 import 'package:secondbuy/View/proddetails.dart';
 
 class FavList extends StatefulWidget {
@@ -31,7 +32,25 @@ class _FavListState extends State<FavList> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Favourite List"),
+        title: Text(
+          "Favourite List",
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        centerTitle: true,
+        automaticallyImplyLeading: true,
+        leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Nav(page: "Profile")),
+              );
+            }),
       ),
       body: FutureBuilder<List<String>>(
         future: getFavouriteList(),
@@ -39,10 +58,10 @@ class _FavListState extends State<FavList> {
           if (favListSnapshot.connectionState != ConnectionState.done)
             return Global.Loading("Loading");
 
-          if(favListSnapshot.data.isEmpty) {
-            return Global.Message("Your Favourite List is empty", 20, Icons.info, 30, Colors.blue);
-          }
-          else{
+          if (favListSnapshot.data.isEmpty) {
+            return Global.Message("Your Favourite List is empty", 20,
+                Icons.info, 30, Colors.blue);
+          } else {
             return StreamBuilder(
                 stream: FirebaseDatabase.instance
                     .reference()
@@ -53,55 +72,51 @@ class _FavListState extends State<FavList> {
                     Map<dynamic, dynamic> map = snapshot.data.snapshot.value;
                     //remove any product that is not purchased by the buyer
                     map.removeWhere((key, value) =>
-                    !favListSnapshot.data.toString().contains(value['id']));
+                        !favListSnapshot.data.toString().contains(value['id']));
 
                     FirebaseDatabase.instance
                         .reference()
-                        .child("products").onChildChanged.listen((event) {setState(() {
-
-                        });});
-
+                        .child("products")
+                        .onChildChanged
+                        .listen((event) {
+                      setState(() {});
+                    });
 
                     if (map.values.isNotEmpty) {
                       return GridView.builder(
-                          itemCount: map.values
-                              .toList()
-                              .length,
-                          gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                          itemCount: map.values.toList().length,
+                          gridDelegate:
+                              new SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 1,
                             mainAxisSpacing: 1,
                             childAspectRatio: 3 / 1,
-
                           ),
                           itemBuilder: (BuildContext context, int index) {
                             return single_prod(
                               product_id: map.values.toList()[index]['id'],
                               product_name: map.values.toList()[index]['name'],
                               product_photoURL: map.values
-                                  .toList()[index]['prodImg'].values
+                                  .toList()[index]['prodImg']
+                                  .values
                                   .toList()[0]['image'],
-                              product_price: map.values
-                                  .toList()[index]['price'],
-                              product_review: map.values
-                                  .toList()[index]['review'],
-                              product_rating: map.values
-                                  .toList()[index]['rating'],
-                              product_status: map.values
-                                  .toList()[index]['status'],
+                              product_price: map.values.toList()[index]
+                                  ['price'],
+                              product_review: map.values.toList()[index]
+                                  ['review'],
+                              product_rating: map.values.toList()[index]
+                                  ['rating'],
+                              product_status: map.values.toList()[index]
+                                  ['status'],
                             );
                           });
+                    } else {
+                      return Global.Message("You haven't review anything", 20,
+                          Icons.info, 30, Colors.blue);
                     }
-                    else {
-                      return Global.Message(
-                          "You haven't review anything", 20, Icons.info, 30,
-                          Colors.blue);
-                    }
-                  }
-                  else {
+                  } else {
                     return Global.Loading("Loading your purchase list");
                   }
-                }
-            );
+                });
           }
         },
       ),
@@ -109,27 +124,28 @@ class _FavListState extends State<FavList> {
   }
 
   Future<List<String>> getFavouriteList() async {
-    var purchaseDb = FirebaseDatabase.instance.reference().child("users").child(uid).child("favItem");
+    var purchaseDb = FirebaseDatabase.instance
+        .reference()
+        .child("users")
+        .child(uid)
+        .child("favItem");
 
     return purchaseDb.once().then((DataSnapshot snapshot) {
       List<String> favList = new List();
 
-      if(snapshot.value != null) {
-        try{
+      if (snapshot.value != null) {
+        try {
           snapshot.value.forEach((key, value) {
             Map<dynamic, dynamic> purchases = value;
             favList.add(purchases.values.toList()[0]);
           });
-
         } on NoSuchMethodError catch (e) {
           print(e.stackTrace);
         }
         return new List.from(favList);
-      }
-      else {
+      } else {
         return new List.from(favList);
       }
-
     });
   }
 }
@@ -154,10 +170,8 @@ class single_prod extends StatelessWidget {
     this.product_status,
   });
 
-
   @override
   Widget build(BuildContext context) {
-
     return Container(
       height: 100,
       child: Card(
@@ -167,17 +181,23 @@ class single_prod extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ProdDetails(prodID : product_id)),
+                MaterialPageRoute(
+                    builder: (context) => ProdDetails(prodID: product_id)),
               );
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
-                child: Row (
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Image.network(product_photoURL, fit: BoxFit.cover, height: 100, width: 100,),
+                    Image.network(
+                      product_photoURL,
+                      fit: BoxFit.cover,
+                      height: 100,
+                      width: 100,
+                    ),
                     SizedBox(
                       width: 10,
                     ),
@@ -218,7 +238,4 @@ class single_prod extends StatelessWidget {
       ),
     );
   }
-
 }
-
-

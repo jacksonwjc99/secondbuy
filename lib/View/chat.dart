@@ -54,6 +54,24 @@ class _ChatState extends State<Chat> {
       }
     });
 
+    Future<dynamic> getData() async {
+      try {
+        final FirebaseUser user = await auth.currentUser();
+        return FirebaseDatabase.instance
+            .reference()
+            .child("users")
+            .child(user.uid)
+            .once()
+            .then((DataSnapshot snapshot) {
+          Map<dynamic, dynamic> userDB = snapshot.value;
+
+          return userDB["id"];
+        });
+      } catch (e) {
+        print(e);
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -70,140 +88,178 @@ class _ChatState extends State<Chat> {
           )
         ],
       ),
-      body: Stack(
-        children: <Widget>[
-          if (isUserLogin == false) notLogin(),
-          if (isUserLogin == true)
-            Container(
-              child: FutureBuilder<List<String>>(
-                  future: GetContactCount(),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (snapshot.connectionState != ConnectionState.done)
-                      return Global.Loading("Loading your contact list");
+      body: FutureBuilder(
+          future: getData(),
+          // Must return type Future, eg. Future<User> getUser()
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            // If data still loading
+            if (snapshot.connectionState != ConnectionState.done) {
+              // Return loading symbol
+              return Global.Loading("Loading your contact list");
+            }
 
-                    if (!snapshot.hasData || snapshot.data.isEmpty) {
-                      return Global.Message("No Contacts were found", 20,
-                          Icons.info, 30, Colors.blue);
-                    }
+            // If no data
+            if (!snapshot.hasData) {
+              print("guest detected");
+              return new Center(
+                child: Container(
+                  margin: const EdgeInsets.only(top: 0.0),
+                  child: InkWell(
+                    child: Text(
+                      "Login now to view more",
+                      textAlign: TextAlign.center,
+                      style:
+                      TextStyle(fontStyle: FontStyle.italic, fontSize: 25),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                      );
+                    },
+                  ),
+                ),
+              );
+            }
 
-                    return Container(
-                      child: FutureBuilder<List<Contact>>(
-                          future: GetContactList(snapshot.data),
-                          builder: (BuildContext context,
-                              AsyncSnapshot contactSnapshot) {
-                            if (contactSnapshot.connectionState !=
-                                ConnectionState.done)
-                              return Global.Loading(
-                                  "Loading your contact list");
+            // If got data
+            print("user is logged in");
+            // Display here
+            return new Stack(
+              children: <Widget>[
+                if (isUserLogin == false) notLogin(),
+                if (isUserLogin == true)
+                  Container(
+                    child: FutureBuilder<List<String>>(
+                        future: GetContactCount(),
+                        builder: (BuildContext context, AsyncSnapshot snapshot) {
+                          if (snapshot.connectionState != ConnectionState.done)
+                            return Global.Loading("Loading your contact list");
 
-                            if (!contactSnapshot.hasData) {
-                              return new Container(
-                                child: Text(
-                                  "No Contacts Found",
-                                ),
-                              );
-                            }
+                          if (!snapshot.hasData || snapshot.data.isEmpty) {
+                            return Global.Message("No Contacts were found", 20,
+                                Icons.info, 30, Colors.blue);
+                          }
 
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: snapshot.data.length,
-                              itemBuilder:
-                                  (BuildContext context, int thisIndex) {
-                                Contact contact =
-                                    contactSnapshot.data[thisIndex];
-                                return InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => Chatting(
-                                                contactID: contact.contactID,
-                                                contactName:
-                                                    contact.contactName,
-                                                contactPic: contact.contactPic,
-                                                prodID: "",
-                                              )),
+                          return Container(
+                            child: FutureBuilder<List<Contact>>(
+                                future: GetContactList(snapshot.data),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot contactSnapshot) {
+                                  if (contactSnapshot.connectionState !=
+                                      ConnectionState.done)
+                                    return Global.Loading(
+                                        "Loading your contact list");
+
+                                  if (!contactSnapshot.hasData) {
+                                    return new Container(
+                                      child: Text(
+                                        "No Contacts Found",
+                                      ),
                                     );
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 15,
-                                      vertical: 15,
-                                    ),
-                                    child: Row(
-                                      children: <Widget>[
-                                        Container(
-                                          padding: EdgeInsets.all(2),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(40)),
-                                              border: Border.all(
-                                                width: 2,
-                                                color: Theme.of(context)
-                                                    .primaryColor,
-                                              ),
-                                              //shape: BoxShape.circle,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.grey
-                                                      .withOpacity(0.5),
-                                                  spreadRadius: 1.5,
-                                                  blurRadius: 5,
+                                  }
+
+                                  return ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: snapshot.data.length,
+                                    itemBuilder:
+                                        (BuildContext context, int thisIndex) {
+                                      Contact contact =
+                                      contactSnapshot.data[thisIndex];
+                                      return InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => Chatting(
+                                                  contactID: contact.contactID,
+                                                  contactName:
+                                                  contact.contactName,
+                                                  contactPic: contact.contactPic,
+                                                  prodID: "",
+                                                )),
+                                          );
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 15,
+                                            vertical: 15,
+                                          ),
+                                          child: Row(
+                                            children: <Widget>[
+                                              Container(
+                                                padding: EdgeInsets.all(2),
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.all(
+                                                        Radius.circular(40)),
+                                                    border: Border.all(
+                                                      width: 2,
+                                                      color: Theme.of(context)
+                                                          .primaryColor,
+                                                    ),
+                                                    //shape: BoxShape.circle,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.grey
+                                                            .withOpacity(0.5),
+                                                        spreadRadius: 1.5,
+                                                        blurRadius: 5,
+                                                      ),
+                                                    ]),
+                                                child: CircleAvatar(
+                                                  backgroundImage: NetworkImage(
+                                                      contact.contactPic.toString()),
+                                                  backgroundColor: Colors.white,
+                                                  radius: 30,
                                                 ),
-                                              ]),
-                                          child: CircleAvatar(
-                                            backgroundImage: NetworkImage(
-                                                contact.contactPic.toString()),
-                                            backgroundColor: Colors.white,
-                                            radius: 30,
+                                              ),
+                                              Container(
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                    0.65,
+                                                padding: EdgeInsets.only(left: 20),
+                                                child: Column(children: <Widget>[
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                    children: <Widget>[
+                                                      Text(contact.contactName,
+                                                          style: TextStyle(
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                              FontWeight.bold)),
+                                                    ],
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                  Container(
+                                                    alignment: Alignment.topLeft,
+                                                    child: Text(
+                                                      contact.message,
+                                                      style: TextStyle(
+                                                        fontSize: 13,
+                                                        color: Colors.black54,
+                                                      ),
+                                                      overflow: TextOverflow.ellipsis,
+                                                      maxLines: 2,
+                                                    ),
+                                                  ),
+                                                ]),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                        Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.65,
-                                          padding: EdgeInsets.only(left: 20),
-                                          child: Column(children: <Widget>[
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                Text(contact.contactName,
-                                                    style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                              ],
-                                            ),
-                                            SizedBox(height: 10),
-                                            Container(
-                                              alignment: Alignment.topLeft,
-                                              child: Text(
-                                                contact.message,
-                                                style: TextStyle(
-                                                  fontSize: 13,
-                                                  color: Colors.black54,
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 2,
-                                              ),
-                                            ),
-                                          ]),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                          }),
-                    );
-                  }),
-            ),
-        ],
-      ),
+                                      );
+                                    },
+                                  );
+                                }),
+                          );
+                        }),
+                  ),
+              ],
+            );
+          }),
     );
   }
 

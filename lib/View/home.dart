@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:secondbuy/Util/Components/categories_list.dart';
 import 'package:secondbuy/Util/Components/products.dart';
+import 'package:secondbuy/View/searchSeller.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -48,7 +48,13 @@ class _HomepageState extends State<Homepage> {
                 Icons.search,
                 color: Colors.black,
               ),
-              onPressed: () {})
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SearchSeller()),
+                );
+              })
         ],
       ),
       body: new ListView(

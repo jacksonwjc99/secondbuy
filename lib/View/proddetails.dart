@@ -415,6 +415,7 @@ class _ProductDetailsState extends State<ProdDetails> {
         .child("products")
         .child(productId);
     bool isDuplicate = false;
+    bool firstInsert = false;
     String keyToDelete;
 
     await favRef.once().then((DataSnapshot snapshot) {
@@ -427,6 +428,8 @@ class _ProductDetailsState extends State<ProdDetails> {
         });
       } else {
         // if not fav list found, directly add to favourite
+        firstInsert = true;
+
         productRef.update({
           'fav': favCount + 1,
         });
@@ -436,23 +439,26 @@ class _ProductDetailsState extends State<ProdDetails> {
         });
       }
 
-      // check if fav item is exist when tapped on the fav icon
-      if (isDuplicate == true) {
-        //duplicated fav item = --fav
-        productRef.update({
-          'fav': favCount - 1,
-        });
 
-        favRef.child(keyToDelete).remove();
-      } else {
-        // non duplicate = ++ fav
-        productRef.update({
-          'fav': favCount + 1,
-        });
+      if (firstInsert == false) {
+        // check if fav item is exist when tapped on the fav icon
+        if (isDuplicate == true) {
+          //duplicated fav item = --fav
+          productRef.update({
+            'fav': favCount - 1,
+          });
 
-        favRef.push().set({
-          'id': productId,
-        });
+          favRef.child(keyToDelete).remove();
+        } else {
+          // non duplicate = ++ fav
+          productRef.update({
+            'fav': favCount + 1,
+          });
+
+          favRef.push().set({
+            'id': productId,
+          });
+        }
       }
     });
 

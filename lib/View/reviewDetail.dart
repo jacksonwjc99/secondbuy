@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:secondbuy/Util/Global.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:secondbuy/View/nav.dart';
 
 class ReviewItem extends StatefulWidget {
   ReviewItem({Key key, @required this.prodID, @required this.prodName, @required this.prodPic, @required this.prodStatus, @required this.prodReview, @required this.prodPrice, @required this.prodRating}) : super(key: key);
@@ -46,7 +49,23 @@ class _ReviewItem extends State<ReviewItem> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Review'),
+        backgroundColor: Colors.white,
+        title: Text(
+          'Review',
+          style: TextStyle(color: Colors.black),
+        ),
+        automaticallyImplyLeading: true,
+        leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Nav(page: "Profile")),
+              );
+            }),
       ),
       body: ListView(
         shrinkWrap: true,
@@ -64,20 +83,12 @@ class _ReviewItem extends State<ReviewItem> {
                       height:10,
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
                           widget.prodName,
                           style: TextStyle(
                             fontSize: 16,
-                          ),
-                        ),
-                        Container(
-                          child: Text(
-                            "RM " + widget.prodPrice.toString(),
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
                           ),
                         ),
                       ],
@@ -135,6 +146,11 @@ class _ReviewItem extends State<ReviewItem> {
 
                             await PostReview();
                             _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Your review is posted !')));
+                            Timer(Duration(seconds: 8), () {
+                              // 5s over, navigate to a new page
+                              Navigator.pop(context,true);
+                            });
+
                           }
                           else{
                             print(_formKey.currentState.validate());

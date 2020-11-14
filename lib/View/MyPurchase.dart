@@ -82,6 +82,8 @@ class _MyPurchaseState extends State<MyPurchase> {
                                   .toList()[index]['price'],
                               product_review: map.values
                                   .toList()[index]['review'],
+                              product_reply: map.values
+                                  .toList()[index]['reply'],
                               product_rating: map.values
                                   .toList()[index]['rating'],
                               product_status: map.values
@@ -160,6 +162,7 @@ class single_prod extends StatelessWidget {
   final product_photoURL;
   final product_price;
   final product_review;
+  final product_reply;
   final product_rating;
   final product_status;
 
@@ -169,6 +172,7 @@ class single_prod extends StatelessWidget {
     this.product_photoURL,
     this.product_price,
     this.product_review,
+    this.product_reply,
     this.product_rating,
     this.product_status,
   });
@@ -214,6 +218,16 @@ class single_prod extends StatelessWidget {
                           ),
                           Text(
                             product_review == null? "You have not review the product yet" : product_review,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            product_reply == null
+                                ? ""
+                                : "Reply: $product_reply",
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(

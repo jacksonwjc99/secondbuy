@@ -32,7 +32,7 @@ class ReviewItem extends StatefulWidget {
 
 class _ReviewItem extends State<ReviewItem> {
   String reviewInput;
-  int ratings;
+  int ratings = 3;
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 

@@ -3,8 +3,7 @@ import 'package:secondbuy/Model/Product.dart';
 import 'package:secondbuy/View/proddetails.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-
-import '../Global.dart';
+import 'package:secondbuy/Util/Global.dart';
 
 class Products extends StatefulWidget {
   Products(

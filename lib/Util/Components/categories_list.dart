@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:secondbuy/Util/Components/products.dart';
 import 'package:secondbuy/View/proddetails.dart';
+import 'package:secondbuy/View/productpage.dart';
 
 class CategoryList extends StatelessWidget {
   @override
@@ -135,7 +136,7 @@ class Category extends StatelessWidget {
           print(category + " + " + subCategory);
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => Products(category: category, subCategory: subCategory,)),
+            MaterialPageRoute(builder: (context) => ProductPage(product: Products(category: category, subCategory: subCategory,))),
           );
         },
         child: Container(

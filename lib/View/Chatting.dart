@@ -6,6 +6,7 @@ import 'package:secondbuy/Model/Contact.dart';
 import 'package:secondbuy/Model/Message.dart';
 import 'package:secondbuy/Util/Global.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:secondbuy/View/nav.dart';
 
 class Chatting extends StatefulWidget{
   Chatting({Key key, @required this.contactID, @required this.contactName, @required this.contactPic, @required this.prodID}) : super(key : key);
@@ -46,10 +47,11 @@ class _ChattingState extends State<Chatting> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.attach_money),
-            color:Colors.white,
+            color:Colors.black,
             onPressed: () {
               ShowOfferWidget();
             },
@@ -65,9 +67,21 @@ class _ChattingState extends State<Chatting> {
             SizedBox(
               width: 10,
             ),
-            Text(widget.contactName),
+            Text(widget.contactName, style: TextStyle(color: Colors.black),),
           ],
         ),
+        automaticallyImplyLeading: true,
+        leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Nav(page: "Hamepage")),
+              );
+            }),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),

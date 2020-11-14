@@ -28,7 +28,7 @@ class _ChatState extends State<Chat> {
           .once()
           .then((DataSnapshot snapshot) {
         Map<dynamic, dynamic> userDB = snapshot.value;
-
+        uid = userDB['id'];
         return userDB["id"];
       });
     } catch (e) {
@@ -258,11 +258,12 @@ class _ChatState extends State<Chat> {
   }
 
   Future<List<String>> GetContactCount() async {
-    var chatRef =
-        FirebaseDatabase.instance.reference().child("chats").child(uid);
-    List<String> contactFound = new List();
 
-    if (uid != "") {
+    var chatRef =
+    FirebaseDatabase.instance.reference().child("chats").child(uid);
+    List<String> contactFound = new List();
+    print(uid);
+    if (uid != "" && uid != null) {
       return chatRef.once().then((DataSnapshot snapshot) {
         try {
           snapshot.value.forEach((key, value) {
@@ -275,6 +276,7 @@ class _ChatState extends State<Chat> {
         } on NoSuchMethodError catch (e) {
           print(e.stackTrace);
         }
+        print(contactFound);
         return new List.from(contactFound);
       });
     } else {

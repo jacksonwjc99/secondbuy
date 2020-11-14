@@ -26,12 +26,18 @@ class _HomeState extends State<Nav> {
                 onTap: () => Navigator.of(context).pop(false),
                 child: Text("NO"),
               ),
-              SizedBox(height: 16,width: 20,),
+              SizedBox(
+                height: 16,
+                width: 20,
+              ),
               new GestureDetector(
                 onTap: () => Navigator.of(context).pop(true),
                 child: Text("YES"),
               ),
-              SizedBox(height: 16,width: 20,),
+              SizedBox(
+                height: 16,
+                width: 20,
+              ),
             ],
           ),
         ) ??

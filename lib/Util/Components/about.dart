@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 
 class About extends StatefulWidget {
-  About({Key key, this.id, @required this.email, @required this.contact, @required this.address, }) : super(key: key);
+  About({
+    Key key,
+    this.id,
+    @required this.email,
+    @required this.contact,
+    @required this.address,
+  }) : super(key: key);
   final String id;
   final String email;
   final String contact;

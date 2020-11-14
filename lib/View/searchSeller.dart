@@ -21,7 +21,7 @@ class _SearchSellerState extends State<SearchSeller> {
   }
 
   void showUsername() async {
-    List<String> x =  await getUsername();
+    List<String> x = await getUsername();
     items.addAll(x);
   }
 
@@ -137,12 +137,13 @@ class _SearchSellerState extends State<SearchSeller> {
                         title: Text('${items[index]}'),
                         onTap: () {
                           userlist.forEach((element) {
-                            if(element.username == items[index]){
+                            if (element.username == items[index]) {
                               print(element.id);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => SellerProfile(id: element.id)),
+                                    builder: (context) =>
+                                        SellerProfile(id: element.id)),
                               );
                             }
                           });

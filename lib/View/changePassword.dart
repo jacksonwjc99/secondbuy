@@ -79,7 +79,7 @@ class _ChangePasswordState extends State<ChangePassword> {
           });
 
           final userRef =
-          FirebaseDatabase().reference().child("users").child(widget.id);
+              FirebaseDatabase().reference().child("users").child(widget.id);
           userRef.update({
             'password': _newPassword,
           });
@@ -122,8 +122,8 @@ class _ChangePasswordState extends State<ChangePassword> {
               context,
               MaterialPageRoute(
                   builder: (context) => EditProfile(
-                    id: widget.id,
-                  )),
+                        id: widget.id,
+                      )),
             );
           },
         ),
@@ -136,72 +136,71 @@ class _ChangePasswordState extends State<ChangePassword> {
               padding: const EdgeInsets.all(28.0),
               child: Center(
                   child: new Form(
-                    key: formkey,
-                    child: Center(
-                      child: new ListView(
-                        shrinkWrap: true,
-                        children: <Widget>[
-                          new Text(
-                            "Change Password",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20),
-                          ),
-                          SizedBox(
-                            width: 20.0,
-                            height: 20.0,
-                          ),
-                          _newPassinput(
-                              "required new password",
-                              true,
-                              "New Password",
-                              'Enter your new password',
-                                  (value) => _newPassword = value,
-                              TextInputType.text),
-                          SizedBox(
-                            width: 20.0,
-                            height: 20.0,
-                          ),
-
-                          _oldPassinput(
-                              "required current password",
-                              true,
-                              "Current Password",
-                              'Enter your current password',
-                                  (value) => _oldPassword = value,
-                              TextInputType.text,
-                              password),
-                          SizedBox(
-                            width: 20.0,
-                            height: 20.0,
-                          ),
-                          Center(
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 138.0, top: 8.0),
-                              child: Row(
-                                children: <Widget>[
-                                  OutlineButton(
-                                    child: Text("Change"),
-                                    onPressed: changePassword,
-                                    shape: new RoundedRectangleBorder(
-                                        borderRadius:
-                                        new BorderRadius.circular(30.0)),
-                                    borderSide: BorderSide(
-                                      style: BorderStyle.solid,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 18.0,
-                                    width: 18.0,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
+                key: formkey,
+                child: Center(
+                  child: new ListView(
+                    shrinkWrap: true,
+                    children: <Widget>[
+                      new Text(
+                        "Change Password",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
                       ),
-                    ),
-                  )),
+                      SizedBox(
+                        width: 20.0,
+                        height: 20.0,
+                      ),
+                      _newPassinput(
+                          "required new password",
+                          true,
+                          "New Password",
+                          'Enter your new password',
+                          (value) => _newPassword = value,
+                          TextInputType.text),
+                      SizedBox(
+                        width: 20.0,
+                        height: 20.0,
+                      ),
+                      _oldPassinput(
+                          "required current password",
+                          true,
+                          "Current Password",
+                          'Enter your current password',
+                          (value) => _oldPassword = value,
+                          TextInputType.text,
+                          password),
+                      SizedBox(
+                        width: 20.0,
+                        height: 20.0,
+                      ),
+                      Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 138.0, top: 8.0),
+                          child: Row(
+                            children: <Widget>[
+                              OutlineButton(
+                                child: Text("Change"),
+                                onPressed: changePassword,
+                                shape: new RoundedRectangleBorder(
+                                    borderRadius:
+                                        new BorderRadius.circular(30.0)),
+                                borderSide: BorderSide(
+                                  style: BorderStyle.solid,
+                                  width: 1,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 18.0,
+                                width: 18.0,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )),
             ),
           ),
         ],
@@ -226,7 +225,7 @@ class _ChangePasswordState extends State<ChangePassword> {
           RegExp regex = new RegExp(pattern);
           if (!regex.hasMatch(value))
             errMsg = 'Contain 8 or more characters & numbers only';
-          else{
+          else {
             return null;
           }
           return errMsg;

@@ -439,7 +439,6 @@ class _ProductDetailsState extends State<ProdDetails> {
         });
       }
 
-
       if (firstInsert == false) {
         // check if fav item is exist when tapped on the fav icon
         if (isDuplicate == true) {

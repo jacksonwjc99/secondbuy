@@ -8,7 +8,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:secondbuy/View/nav.dart';
 
 class ReviewItem extends StatefulWidget {
-  ReviewItem({Key key, @required this.prodID, @required this.prodName, @required this.prodPic, @required this.prodStatus, @required this.prodReview, @required this.prodPrice, @required this.prodRating}) : super(key: key);
+  ReviewItem(
+      {Key key,
+      @required this.prodID,
+      @required this.prodName,
+      @required this.prodPic,
+      @required this.prodStatus,
+      @required this.prodReview,
+      @required this.prodPrice,
+      @required this.prodRating})
+      : super(key: key);
   final String prodID;
   final String prodName;
   final String prodPic;
@@ -22,7 +31,6 @@ class ReviewItem extends StatefulWidget {
 }
 
 class _ReviewItem extends State<ReviewItem> {
-
   String reviewInput;
   int ratings;
   final _formKey = GlobalKey<FormState>();
@@ -78,9 +86,13 @@ class _ReviewItem extends State<ReviewItem> {
                 child: ListView(
                   shrinkWrap: true,
                   children: <Widget>[
-                    Image.network(widget.prodPic, fit: BoxFit.cover, height:MediaQuery.of(context).size.height * 0.35,),
+                    Image.network(
+                      widget.prodPic,
+                      fit: BoxFit.cover,
+                      height: MediaQuery.of(context).size.height * 0.35,
+                    ),
                     SizedBox(
-                      height:10,
+                      height: 10,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -94,77 +106,77 @@ class _ReviewItem extends State<ReviewItem> {
                       ],
                     ),
                     SizedBox(
-                      height:10,
+                      height: 10,
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        RatingBar(
-                        initialRating: widget.prodRating.toDouble(),
-                        minRating: 1,
-                        direction: Axis.horizontal,
-                        allowHalfRating: false,
-                        itemCount: 5,
-                        itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                        itemBuilder: (context, _) => Icon(
-                          Icons.star,
-                          color: Colors.amber,
-                        ),
-                        onRatingUpdate: (rating) {
-                          setState(() {
-                            ratings = rating.toInt();
-                            print(ratings);
-                          });
-                        },
-                      ),
-                      ]
-                    ),
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          RatingBar(
+                            initialRating: widget.prodRating.toDouble(),
+                            minRating: 1,
+                            direction: Axis.horizontal,
+                            allowHalfRating: false,
+                            itemCount: 5,
+                            itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                            itemBuilder: (context, _) => Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            ),
+                            onRatingUpdate: (rating) {
+                              setState(() {
+                                ratings = rating.toInt();
+                                print(ratings);
+                              });
+                            },
+                          ),
+                        ]),
                     SizedBox(
-                      height:10,
+                      height: 10,
                     ),
                     TextFormField(
                       decoration: InputDecoration(
                         hintText: "Leave a review",
                         labelText: "Review",
-                        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 20.0),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+                        contentPadding:
+                            EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 20.0),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20.0)),
                       ),
                       initialValue: widget.prodReview,
                       maxLines: 3,
                       obscureText: false,
-                      validator: (value) => value.isEmpty ? "Leave review before u submit" : null,
+                      validator: (value) =>
+                          value.isEmpty ? "Leave review before u submit" : null,
                       onSaved: (value) => reviewInput = value,
                     ),
                     OutlineButton(
                       child: Text("Post Review"),
                       onPressed: () async {
-                        if (widget.prodStatus == "sold"){
+                        if (widget.prodStatus == "sold") {
                           if (_formKey.currentState.validate()) {
-                            _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Posting your review')));
+                            _scaffoldKey.currentState.showSnackBar(
+                                SnackBar(content: Text('Posting your review')));
                             print(_formKey.currentState.validate());
                             _formKey.currentState.save();
 
                             await PostReview();
-                            _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Your review is posted !')));
+                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                content: Text('Your review is posted !')));
                             Timer(Duration(seconds: 8), () {
                               // 5s over, navigate to a new page
-                              Navigator.pop(context,true);
+                              Navigator.pop(context, true);
                             });
-
-                          }
-                          else{
+                          } else {
                             print(_formKey.currentState.validate());
                           }
+                        } else {
+                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                              content:
+                                  Text('You have reviewed this product.')));
                         }
-                        else{
-                          _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('You have reviewed this product.')));
-                        }
-
                       },
                       shape: new RoundedRectangleBorder(
-                          borderRadius:
-                          new BorderRadius.circular(
-                              30.0)),
+                          borderRadius: new BorderRadius.circular(30.0)),
                       borderSide: BorderSide(
                         style: BorderStyle.solid,
                         width: 1,
@@ -181,13 +193,14 @@ class _ReviewItem extends State<ReviewItem> {
   }
 
   Future PostReview() async {
-    var productDb = FirebaseDatabase.instance.reference().child("products").child(widget.prodID);
+    var productDb = FirebaseDatabase.instance
+        .reference()
+        .child("products")
+        .child(widget.prodID);
     await productDb.update({
-      'review' : reviewInput.trim(),
-      'rating' : ratings.toString(),
-      'status' : 'reviewed',
+      'review': reviewInput.trim(),
+      'rating': ratings.toString(),
+      'status': 'reviewed',
     });
   }
-
 }
-

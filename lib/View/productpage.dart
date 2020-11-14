@@ -3,8 +3,8 @@ import 'package:secondbuy/Util/Components/products.dart';
 import 'package:secondbuy/View/nav.dart';
 
 class ProductPage extends StatefulWidget {
-  ProductPage({Key key,
-    @required this.product});
+  ProductPage({Key key, @required this.product});
+
   final Products product;
 
   @override
@@ -39,5 +39,4 @@ class _ProductPageState extends State<ProductPage> {
       ),
     );
   }
-
 }

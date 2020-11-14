@@ -277,26 +277,29 @@ class _SellState extends State<Sell> {
   String _radioValue2 = "new";
 
   final AsyncMemoizer _memoizer = AsyncMemoizer();
+
   Future<dynamic> getData() async {
     try {
       final FirebaseUser user = await auth.currentUser();
       //return this._memoizer.runOnce(() async {
-        //await Future.delayed(Duration(seconds: 2));
-        return FirebaseDatabase.instance
-            .reference()
-            .child("users")
-            .child(user.uid)
-            .once()
-            .then((DataSnapshot snapshot) {
-          Map<dynamic, dynamic> userDB = snapshot.value;
-          return userDB["id"];
-        });
-    //  });
+      //await Future.delayed(Duration(seconds: 2));
+      return FirebaseDatabase.instance
+          .reference()
+          .child("users")
+          .child(user.uid)
+          .once()
+          .then((DataSnapshot snapshot) {
+        Map<dynamic, dynamic> userDB = snapshot.value;
+        return userDB["id"];
+      });
+      //  });
     } catch (e) {
       print(e);
     }
   }
+
   var i = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -314,7 +317,7 @@ class _SellState extends State<Sell> {
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             String id = snapshot.data;
             // If data still loading
-            if(i == 0){
+            if (i == 0) {
               if (snapshot.connectionState != ConnectionState.done) {
                 // Return loading symbol
                 i++;

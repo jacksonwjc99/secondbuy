@@ -125,7 +125,11 @@ class Category extends StatelessWidget {
   final String category;
   final String subCategory;
 
-  Category({this.image_location, this.image_caption, this.category, this.subCategory});
+  Category(
+      {this.image_location,
+      this.image_caption,
+      this.category,
+      this.subCategory});
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +140,12 @@ class Category extends StatelessWidget {
           print(category + " + " + subCategory);
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ProductPage(product: Products(category: category, subCategory: subCategory,))),
+            MaterialPageRoute(
+                builder: (context) => ProductPage(
+                        product: Products(
+                      category: category,
+                      subCategory: subCategory,
+                    ))),
           );
         },
         child: Container(

@@ -67,7 +67,9 @@ class _ProfileState extends State<Profile> {
       print(e);
     }
   }
+
   var i = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,7 +78,7 @@ class _ProfileState extends State<Profile> {
           // Must return type Future, eg. Future<User> getUser()
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             // If data still loading
-            if(i == 0){
+            if (i == 0) {
               if (snapshot.connectionState != ConnectionState.done) {
                 // Return loading symbol
                 i++;

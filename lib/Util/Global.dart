@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'DB.dart';
+
 class Global {
   static Random _rnd = Random();
   static const _chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
@@ -29,16 +30,14 @@ class Global {
   }
 
   static Future<dynamic> getAllProduct() async {
-    return DB
-        .get(DB.db().reference().child("products"))
-        .then((var value) {
+    return DB.get(DB.db().reference().child("products")).then((var value) {
       return value;
     });
   }
 
-  static String generateRandomString(int length) => String.fromCharCodes(Iterable.generate(
-    length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))
-  ));
+  static String generateRandomString(int length) =>
+      String.fromCharCodes(Iterable.generate(
+          length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
   static Widget Loading(String text) {
     return Container(
@@ -50,7 +49,7 @@ class Global {
             children: <Widget>[
               CircularProgressIndicator(),
               SizedBox(
-                height:10,
+                height: 10,
               ),
               Text(text),
             ],
@@ -60,7 +59,8 @@ class Global {
     );
   }
 
-  static Widget Message(String text, double textSize, IconData icon, double iconSize, Color iconColor) {
+  static Widget Message(String text, double textSize, IconData icon,
+      double iconSize, Color iconColor) {
     return Container(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -74,7 +74,7 @@ class Global {
                 color: iconColor,
               ),
               SizedBox(
-                height:10,
+                height: 10,
               ),
               Text(
                 text,
@@ -89,7 +89,7 @@ class Global {
     );
   }
 
-  static Widget PopUp(BuildContext context, title , message) {
+  static Widget PopUp(BuildContext context, title, message) {
     // set up the button
     Widget okButton = FlatButton(
       child: Text("OK"),

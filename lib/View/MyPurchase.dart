@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:secondbuy/View/reviewDetail.dart';
 
 class MyPurchase extends StatefulWidget {
-
   @override
   _MyPurchaseState createState() => _MyPurchaseState();
 }
@@ -37,11 +36,9 @@ class _MyPurchaseState extends State<MyPurchase> {
             return Global.Loading("Loading");
           print(reviewListSnapshot.data);
           if (reviewListSnapshot.data.isEmpty) {
-            return Global.Message(
-                "You haven't purchase anything", 20, Icons.info, 30,
-                Colors.blue);
-          }
-          else {
+            return Global.Message("You haven't purchase anything", 20,
+                Icons.info, 30, Colors.blue);
+          } else {
             //Purchase list not empty
             return StreamBuilder(
                 stream: FirebaseDatabase.instance
@@ -52,56 +49,51 @@ class _MyPurchaseState extends State<MyPurchase> {
                   if (snapshot.hasData) {
                     Map<dynamic, dynamic> map = snapshot.data.snapshot.value;
                     //remove any product that is not purchased by the buyer
-                    map.removeWhere((key, value) =>
-                    !reviewListSnapshot.data.toString().contains(value['id']));
+                    map.removeWhere((key, value) => !reviewListSnapshot.data
+                        .toString()
+                        .contains(value['id']));
 
                     //remove any product that is not in review status
                     map.removeWhere((key, value) =>
                         value['status'].toString().contains("selling"));
 
-
                     if (map.values.isNotEmpty) {
                       return GridView.builder(
-                          itemCount: map.values
-                              .toList()
-                              .length,
-                          gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                          itemCount: map.values.toList().length,
+                          gridDelegate:
+                              new SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 1,
                             mainAxisSpacing: 1,
                             childAspectRatio: 3 / 1,
-
                           ),
                           itemBuilder: (BuildContext context, int index) {
                             return single_prod(
                               product_id: map.values.toList()[index]['id'],
                               product_name: map.values.toList()[index]['name'],
                               product_photoURL: map.values
-                                  .toList()[index]['prodImg'].values
+                                  .toList()[index]['prodImg']
+                                  .values
                                   .toList()[0]['image'],
-                              product_price: map.values
-                                  .toList()[index]['price'],
-                              product_review: map.values
-                                  .toList()[index]['review'],
-                              product_reply: map.values
-                                  .toList()[index]['reply'],
-                              product_rating: map.values
-                                  .toList()[index]['rating'],
-                              product_status: map.values
-                                  .toList()[index]['status'],
+                              product_price: map.values.toList()[index]
+                                  ['price'],
+                              product_review: map.values.toList()[index]
+                                  ['review'],
+                              product_reply: map.values.toList()[index]
+                                  ['reply'],
+                              product_rating: map.values.toList()[index]
+                                  ['rating'],
+                              product_status: map.values.toList()[index]
+                                  ['status'],
                             );
                           });
+                    } else {
+                      return Global.Message("You haven't review anything", 20,
+                          Icons.info, 30, Colors.blue);
                     }
-                    else {
-                      return Global.Message(
-                          "You haven't review anything", 20, Icons.info, 30,
-                          Colors.blue);
-                    }
-                  }
-                  else {
+                  } else {
                     return Global.Loading("Loading your purchase list");
                   }
-                }
-            );
+                });
           }
         },
       ),
@@ -110,27 +102,28 @@ class _MyPurchaseState extends State<MyPurchase> {
 
   //Load purchase List
   Future<List<String>> getPurchaseList() async {
-    var purchaseDb = FirebaseDatabase.instance.reference().child("users").child(uid).child("purchases");
+    var purchaseDb = FirebaseDatabase.instance
+        .reference()
+        .child("users")
+        .child(uid)
+        .child("purchases");
 
     return purchaseDb.once().then((DataSnapshot snapshot) {
       List<String> purchaseList = new List();
 
-      if(snapshot.value != null) {
-        try{
+      if (snapshot.value != null) {
+        try {
           snapshot.value.forEach((key, value) {
             Map<dynamic, dynamic> purchases = value;
             purchaseList.add(purchases.values.toList()[0]);
           });
-
         } on NoSuchMethodError catch (e) {
           print(e.stackTrace);
         }
         return new List.from(purchaseList);
-      }
-      else {
+      } else {
         return new List.from(purchaseList);
       }
-
     });
   }
 
@@ -138,13 +131,9 @@ class _MyPurchaseState extends State<MyPurchase> {
     return Container(
       child: OutlineButton(
         child: Text("Sell Now"),
-        onPressed: (){
-
-        },
+        onPressed: () {},
         shape: new RoundedRectangleBorder(
-            borderRadius:
-            new BorderRadius.circular(
-                30.0)),
+            borderRadius: new BorderRadius.circular(30.0)),
         borderSide: BorderSide(
           style: BorderStyle.solid,
           width: 1,
@@ -152,7 +141,6 @@ class _MyPurchaseState extends State<MyPurchase> {
       ),
     );
   }
-
 }
 
 // Product widget
@@ -177,10 +165,8 @@ class single_prod extends StatelessWidget {
     this.product_status,
   });
 
-
   @override
   Widget build(BuildContext context) {
-
     return Container(
       height: 100,
       child: Card(
@@ -190,19 +176,35 @@ class single_prod extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ReviewItem(prodID : product_id, prodName: product_name, prodPic: product_photoURL, prodStatus: product_status, prodReview: product_review, prodPrice: double.parse(product_price.toString()), prodRating: int.parse(product_rating == null? 3.toString() : product_rating),)),
+                MaterialPageRoute(
+                    builder: (context) => ReviewItem(
+                          prodID: product_id,
+                          prodName: product_name,
+                          prodPic: product_photoURL,
+                          prodStatus: product_status,
+                          prodReview: product_review,
+                          prodPrice: double.parse(product_price.toString()),
+                          prodRating: int.parse(product_rating == null
+                              ? 3.toString()
+                              : product_rating),
+                        )),
               );
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
-                child: Row (
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Image.network(product_photoURL, fit: BoxFit.cover, height: 100, width: 100,),
+                    Image.network(
+                      product_photoURL,
+                      fit: BoxFit.cover,
+                      height: 100,
+                      width: 100,
+                    ),
                     SizedBox(
-                      width:10,
+                      width: 10,
                     ),
                     Flexible(
                       child: Column(
@@ -217,7 +219,9 @@ class single_prod extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            product_review == null? "You have not review the product yet" : product_review,
+                            product_review == null
+                                ? "You have not review the product yet"
+                                : product_review,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -246,10 +250,4 @@ class single_prod extends StatelessWidget {
       ),
     );
   }
-
 }
-
-
-
-
-

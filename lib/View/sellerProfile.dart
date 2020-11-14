@@ -14,7 +14,6 @@ class SellerProfile extends StatefulWidget {
 }
 
 class _SellerProfileState extends State<SellerProfile> {
-
   Future<dynamic> getData() {
     return FirebaseDatabase.instance
         .reference()
@@ -24,14 +23,14 @@ class _SellerProfileState extends State<SellerProfile> {
         .then((DataSnapshot snapshot) {
       Map<dynamic, dynamic> userDB = snapshot.value;
 
-        var user = new User();
-        user.address = userDB['address'];
-        user.contact = userDB['contact'];
-        user.email = userDB['email'];
-        user.id = userDB['id'];
-        user.password = userDB['password'];
-        user.photoURL = userDB['photoURL'];
-        user.username = userDB['username'];
+      var user = new User();
+      user.address = userDB['address'];
+      user.contact = userDB['contact'];
+      user.email = userDB['email'];
+      user.id = userDB['id'];
+      user.password = userDB['password'];
+      user.photoURL = userDB['photoURL'];
+      user.username = userDB['username'];
 
       return user;
     });
@@ -39,7 +38,6 @@ class _SellerProfileState extends State<SellerProfile> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: FutureBuilder(
           future: getData(),
@@ -73,18 +71,19 @@ class _SellerProfileState extends State<SellerProfile> {
                         child: Stack(
                           children: <Widget>[
                             Positioned(
-                                top: 30,
-                                child: IconButton(
-                                    icon: Icon(
-                                      Icons.arrow_back_ios,
-                                      color: Colors.black,
-                                    ),
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => SearchSeller()),
-                                      );
-                                    }),
+                              top: 30,
+                              child: IconButton(
+                                  icon: Icon(
+                                    Icons.arrow_back_ios,
+                                    color: Colors.black,
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => SearchSeller()),
+                                    );
+                                  }),
                             )
                           ],
                         ),
@@ -102,11 +101,11 @@ class _SellerProfileState extends State<SellerProfile> {
                                 child: new Text(
                                   user.username,
                                   style: TextStyle(
-                                      fontSize: 20, fontWeight: FontWeight.bold),
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ),
-
                           ],
                         ),
                       ),
@@ -136,7 +135,9 @@ class _SellerProfileState extends State<SellerProfile> {
                           child: TabBarView(children: [
                             Container(
                               child: Products(
-                                  category: "", subCategory: "", sellerProd: true),
+                                  category: "",
+                                  subCategory: "",
+                                  sellerProd: true),
                             ),
                             Container(
                               child: Text("Reviews"),
@@ -155,15 +156,15 @@ class _SellerProfileState extends State<SellerProfile> {
                   ),
                 ),
                 Positioned(
-                  top: 40.0, // (background container size) - (circle height / 2)
+                  top: 40.0,
+                  // (background container size) - (circle height / 2)
                   right: 20,
                   child: Container(
                     height: 80.0,
                     width: 80.0,
                     decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: NetworkImage(
-                              user.photoURL),
+                          image: NetworkImage(user.photoURL),
                           fit: BoxFit.fill,
                         ),
                         shape: BoxShape.circle,
@@ -174,8 +175,6 @@ class _SellerProfileState extends State<SellerProfile> {
               ],
             );
           }),
-
-
 
       /*
       Stack(
@@ -285,7 +284,6 @@ class _SellerProfileState extends State<SellerProfile> {
           ),
         ],
       ),*/
-
     );
   }
 }

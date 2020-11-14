@@ -258,9 +258,8 @@ class _ChatState extends State<Chat> {
   }
 
   Future<List<String>> GetContactCount() async {
-
     var chatRef =
-    FirebaseDatabase.instance.reference().child("chats").child(uid);
+        FirebaseDatabase.instance.reference().child("chats").child(uid);
     List<String> contactFound = new List();
     print(uid);
     if (uid != "" && uid != null) {

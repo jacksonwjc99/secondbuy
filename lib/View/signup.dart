@@ -81,21 +81,20 @@ class _SignupPageSate extends State<SignUpPage> {
         UserUpdateInfo updateUser = UserUpdateInfo();
         updateUser.displayName = _username;
         updateUser.photoUrl =
-        "https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg";
+            "https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg";
         user.updateProfile(updateUser);
 
-        final userRef = FirebaseDatabase().reference()
-            .child("users")
-            .child(user.uid);
-        print(user.uid + " " + _email + " " + _username + " " + _password + " " + _contact + " " + _selectedItem.toString());
+        final userRef =
+            FirebaseDatabase().reference().child("users").child(user.uid);
         userRef.set({
-          'address' : _selectedItem.toString(),
-          'contact' : _contact,
-          'email' : _email,
-          'password' : _password,
-          'id' : user.uid,
-          'username' : _username,
-          'photoURL' : "https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg",
+          'address': _selectedItem.toString(),
+          'contact': _contact,
+          'email': _email,
+          'password': _password,
+          'id': user.uid,
+          'username': _username,
+          'photoURL':
+              "https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg",
         });
 
         Navigator.push(
@@ -109,8 +108,7 @@ class _SignupPageSate extends State<SignUpPage> {
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.black45,
         );
-      }
-      catch(e) {
+      } catch (e) {
         print(e);
         Fluttertoast.showToast(
           msg: "Email has been registered",
@@ -161,103 +159,99 @@ class _SignupPageSate extends State<SignUpPage> {
               padding: const EdgeInsets.all(28.0),
               child: Center(
                   child: new Form(
-                    key: formkey,
-                    child: Center(
-                      child: new ListView(
-                        shrinkWrap: true,
-                        children: <Widget>[
-                          _emailInput(
-                              "required email",
-                              false,
-                              "Email",
-                              'Enter your Email',
-                                  (value) => _email = value,
-                              TextInputType.text),
-                          SizedBox(
-                            width: 20.0,
-                            height: 20.0,
-                          ),
-                          _charInput(
-                              "required username",
-                              false,
-                              "Username",
-                              'Enter your Username',
-                                  (value) => _username = value,
-                              TextInputType.text),
-                          SizedBox(
-                            width: 20.0,
-                            height: 20.0,
-                          ),
-                          _passwordInput(
-                              "required password",
-                              true,
-                              "Password",
-                              'Enter your Password',
-                                  (value) => _password = value,
-                              TextInputType.text),
-                          SizedBox(
-                            width: 20.0,
-                            height: 20.0,
-                          ),
-                          _contactInput(
-                              "required contact number",
-                              false,
-                              "Contact No.",
-                              'Enter your Contact',
-                                  (value) => _contact = value,
-                              TextInputType.phone),
-                          SizedBox(
-                            width: 20.0,
-                            height: 20.0,
-                          ),
-
-                          Container(
-                            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20.0),
-                                border: Border.all(width: 0.5)),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton(
-                                  value: _selectedItem,
-                                  items: _dropdownMenuItems,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _selectedItem = value;
-                                    });
-                                  }
-                              ),
-                            ),
-                          ),
-                          Center(
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 138.0, top: 8.0),
-                              child: Row(
-                                children: <Widget>[
-                                  OutlineButton(
-                                    child: Text("Sign Up"),
-                                    onPressed:
-                                    createUser,
-
-                                    shape: new RoundedRectangleBorder(
-                                        borderRadius:
-                                        new BorderRadius.circular(30.0)),
-                                    borderSide: BorderSide(
-                                      style: BorderStyle.solid,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 18.0,
-                                    width: 18.0,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
+                key: formkey,
+                child: Center(
+                  child: new ListView(
+                    shrinkWrap: true,
+                    children: <Widget>[
+                      _emailInput(
+                          "required email",
+                          false,
+                          "Email",
+                          'Enter your Email',
+                          (value) => _email = value,
+                          TextInputType.text),
+                      SizedBox(
+                        width: 20.0,
+                        height: 20.0,
                       ),
-                    ),
-                  )),
+                      _charInput(
+                          "required username",
+                          false,
+                          "Username",
+                          'Enter your Username',
+                          (value) => _username = value,
+                          TextInputType.text),
+                      SizedBox(
+                        width: 20.0,
+                        height: 20.0,
+                      ),
+                      _passwordInput(
+                          "required password",
+                          true,
+                          "Password",
+                          'Enter your Password',
+                          (value) => _password = value,
+                          TextInputType.text),
+                      SizedBox(
+                        width: 20.0,
+                        height: 20.0,
+                      ),
+                      _contactInput(
+                          "required contact number",
+                          false,
+                          "Contact No.",
+                          'Enter your Contact',
+                          (value) => _contact = value,
+                          TextInputType.phone),
+                      SizedBox(
+                        width: 20.0,
+                        height: 20.0,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20.0),
+                            border: Border.all(width: 0.5)),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton(
+                              value: _selectedItem,
+                              items: _dropdownMenuItems,
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedItem = value;
+                                });
+                              }),
+                        ),
+                      ),
+                      Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 138.0, top: 8.0),
+                          child: Row(
+                            children: <Widget>[
+                              OutlineButton(
+                                child: Text("Sign Up"),
+                                onPressed: createUser,
+                                shape: new RoundedRectangleBorder(
+                                    borderRadius:
+                                        new BorderRadius.circular(30.0)),
+                                borderSide: BorderSide(
+                                  style: BorderStyle.solid,
+                                  width: 1,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 18.0,
+                                width: 18.0,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )),
             ),
           ),
         ],
@@ -278,14 +272,15 @@ class _SignupPageSate extends State<SignUpPage> {
       validator: (value) {
         String errMsg;
         if (value.isNotEmpty) {
-          Pattern pattern = r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$";
+          Pattern pattern =
+              r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$";
           RegExp regex = new RegExp(pattern);
           if (!regex.hasMatch(value))
             errMsg = 'Incorrect Email Format (abc@mail.com)';
           else
             return null;
           return errMsg;
-        }else{
+        } else {
           return validation;
         }
       },
@@ -294,8 +289,8 @@ class _SignupPageSate extends State<SignUpPage> {
     );
   }
 
-  Widget _charInput(String validation, bool, String label, String hint, save,
-      keyboard) {
+  Widget _charInput(
+      String validation, bool, String label, String hint, save, keyboard) {
     return new TextFormField(
       decoration: InputDecoration(
         hintText: hint,
@@ -314,7 +309,7 @@ class _SignupPageSate extends State<SignUpPage> {
           else
             return null;
           return errMsg;
-        }else{
+        } else {
           return validation;
         }
       },
@@ -343,7 +338,7 @@ class _SignupPageSate extends State<SignUpPage> {
           else
             return null;
           return errMsg;
-        }else{
+        } else {
           return validation;
         }
       },

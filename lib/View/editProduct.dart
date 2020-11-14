@@ -29,7 +29,6 @@ class _EditProductState extends State<EditProduct> {
 
   //List<Asset> images = List<Asset>();
 
-
   //input variables
   String prodName;
   double prodPrice;
@@ -273,7 +272,12 @@ class _EditProductState extends State<EditProduct> {
   var i = 0;
 
   getProductDetails() {
-    FirebaseDatabase.instance.reference().child("products").child(widget.productID).once().then((DataSnapshot productSnapshot) {
+    FirebaseDatabase.instance
+        .reference()
+        .child("products")
+        .child(widget.productID)
+        .once()
+        .then((DataSnapshot productSnapshot) {
       Map<dynamic, dynamic> products = productSnapshot.value;
       setState(() {
         prodName = products['name'];
@@ -316,16 +320,16 @@ class _EditProductState extends State<EditProduct> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
-        title: Text('Sell', style: TextStyle(color: Colors.black),),
+        title: Text(
+          'Sell',
+          style: TextStyle(color: Colors.black),
+        ),
       ),
       body: ListView(
         shrinkWrap: true,
         children: <Widget>[
-
-          if(isUserLogin == false)
-            notLogin(),
-
-          if(isUserLogin == true)
+          if (isUserLogin == false) notLogin(),
+          if (isUserLogin == true)
             Center(
               child: Padding(
                 padding: const EdgeInsets.all(20),
@@ -340,7 +344,8 @@ class _EditProductState extends State<EditProduct> {
                             false,
                             "Product Name",
                             'Product Name',
-                                (value) => prodName = value, prodName),
+                            (value) => prodName = value,
+                            prodName),
                         SizedBox(
                           width: 20.0,
                           height: 20.0,
@@ -360,7 +365,8 @@ class _EditProductState extends State<EditProduct> {
                             false,
                             "Product Price",
                             "Product Price",
-                                (value) => prodPrice = double.parse(value), prodPrice),
+                            (value) => prodPrice = double.parse(value),
+                            prodPrice),
                         SizedBox(
                           width: 20.0,
                           height: 20.0,
@@ -370,7 +376,8 @@ class _EditProductState extends State<EditProduct> {
                             false,
                             "Product Details",
                             "Product Details",
-                                (value) => prodDetails = value, prodDetails),
+                            (value) => prodDetails = value,
+                            prodDetails),
                         SizedBox(
                           width: 20.0,
                           height: 10.0,
@@ -386,7 +393,8 @@ class _EditProductState extends State<EditProduct> {
                             false,
                             "Meetup Address",
                             "Meetup Address",
-                                (value) => address = value, address),
+                            (value) => address = value,
+                            address),
                         SizedBox(
                           width: 20.0,
                           height: 10.0,
@@ -398,7 +406,10 @@ class _EditProductState extends State<EditProduct> {
                                 child: Text("Update"),
                                 onPressed: () {
                                   if (_formKey.currentState.validate()) {
-                                    _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Updating your product')));
+                                    _scaffoldKey.currentState.showSnackBar(
+                                        SnackBar(
+                                            content:
+                                                Text('Updating your product')));
                                     print(_formKey.currentState.validate());
                                     _formKey.currentState.save();
                                     UpdatingProduct();
@@ -408,7 +419,7 @@ class _EditProductState extends State<EditProduct> {
                                 },
                                 shape: new RoundedRectangleBorder(
                                     borderRadius:
-                                    new BorderRadius.circular(30.0)),
+                                        new BorderRadius.circular(30.0)),
                                 borderSide: BorderSide(
                                   style: BorderStyle.solid,
                                   width: 1,
@@ -428,7 +439,6 @@ class _EditProductState extends State<EditProduct> {
       ),
     );
   }
-
 
 //  Widget buildGridView() {
 //    return GridView.count(
@@ -487,7 +497,8 @@ class _EditProductState extends State<EditProduct> {
   }
 
   // Creating widgets for form
-  Widget InputField(String valMsg, bool, String label, String hint, save , initialValue) {
+  Widget InputField(
+      String valMsg, bool, String label, String hint, save, initialValue) {
     return new TextFormField(
       initialValue: initialValue,
       decoration: InputDecoration(
@@ -502,7 +513,8 @@ class _EditProductState extends State<EditProduct> {
     );
   }
 
-  Widget AddressField(String valMsg, bool, String label, String hint, save, initialValue) {
+  Widget AddressField(
+      String valMsg, bool, String label, String hint, save, initialValue) {
     return new TextFormField(
       initialValue: initialValue,
       decoration: InputDecoration(
@@ -514,12 +526,13 @@ class _EditProductState extends State<EditProduct> {
       ),
       obscureText: bool,
       validator: (value) =>
-      value.isEmpty && _radioValue == "meetup" ? valMsg : null,
+          value.isEmpty && _radioValue == "meetup" ? valMsg : null,
       onSaved: save,
     );
   }
 
-  Widget NumberField(String valMsg, bool, String label, String hint, save, initialValue) {
+  Widget NumberField(
+      String valMsg, bool, String label, String hint, save, initialValue) {
     return new TextFormField(
       initialValue: initialValue.toString(),
       decoration: InputDecoration(
@@ -719,7 +732,8 @@ class _EditProductState extends State<EditProduct> {
     });
   }
 
-  Widget TextArea(String valMsg, bool, String label, String hint, save, initialValue) {
+  Widget TextArea(
+      String valMsg, bool, String label, String hint, save, initialValue) {
     return new TextFormField(
       initialValue: initialValue,
       decoration: InputDecoration(
@@ -738,10 +752,12 @@ class _EditProductState extends State<EditProduct> {
   // adding product to firebase
   Future<FirebaseUser> UpdatingProduct() async {
     final FirebaseUser user = await auth.currentUser();
-    var productDb =
-    FirebaseDatabase.instance.reference().child("products").child(widget.productID);
+    var productDb = FirebaseDatabase.instance
+        .reference()
+        .child("products")
+        .child(widget.productID);
     var userDb =
-    FirebaseDatabase.instance.reference().child("users").child(user.uid);
+        FirebaseDatabase.instance.reference().child("users").child(user.uid);
 
     //getting seller location
     var sellerLocation;
@@ -749,7 +765,6 @@ class _EditProductState extends State<EditProduct> {
       Map<dynamic, dynamic> seller = snapshot.value;
       sellerLocation = seller['address'];
     });
-
 
     DateFormat df = DateFormat('yyyy-MM-dd HH:mm:ss');
     DateTime dateNow = df.parse(DateTime.now().toString());

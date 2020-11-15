@@ -36,7 +36,7 @@ class _ChattingState extends State<Chatting> {
   var i = 0;
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-  void getUserID() async {
+    void getUserID() async {
     final FirebaseUser user = await auth.currentUser();
     if (i == 0) {
       setState(() {
@@ -354,12 +354,12 @@ class _ChattingState extends State<Chatting> {
         snapshot.value.forEach((key, value) {
           if (uid == value['seller'] &&
               widget.contactID == value['buyer'] &&
-              value['status'] == 'waiting') {
+              value['status'] == 'waiting' && value['prodID'] == widget.prodID) {
             isSeller = true;
             productID = value['prodID'];
             offeredPrice = double.parse(value['price'].toString());
           } else if (uid == value['buyer'] &&
-              widget.contactID == value['seller']) {
+              widget.contactID == value['seller'] && value['prodID'] == widget.prodID) {
             isBuyer = true;
             productID = value['prodID'];
             offerStatus = value['status'];

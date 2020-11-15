@@ -34,6 +34,23 @@ class _ProductDetailsState extends State<ProdDetails> {
     }
   }
 
+  Future<String> getProfileImg(id) async {
+    try {
+      return FirebaseDatabase.instance
+          .reference()
+          .child("users")
+          .child(id)
+          .once()
+          .then((DataSnapshot snapshot) {
+        Map<dynamic, dynamic> userDB = snapshot.value;
+
+        return userDB['photoURL'];
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     getUserID();
@@ -298,11 +315,24 @@ class _ProductDetailsState extends State<ProdDetails> {
                                   color: Colors.black,
                                 ),
                                 onPressed: () async {
-                                  bool isFav = await FavProduct(
-                                      map.values.toList()[12].toString(),
-                                      map.values.toList()[9]);
-                                  print("FAVOURITED " + isFav.toString());
-                                  if (isFav == true) {
+                                  bool isFav;
+                                  if(uid != null && map.values.toList()[4].toString() != uid) {
+                                    isFav = await FavProduct(
+                                        map.values.toList()[12].toString(),
+                                        map.values.toList()[9]);
+                                    print("FAVOURITED " + isFav.toString());
+                                  }
+                                  if(uid == null)
+                                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                        content: Text("You haven't login")));
+                                  else if (map.values.toList()[4].toString() == uid)
+                                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                        content: Text('You are the seller')));
+                                  else if (map.values.toList()[15].toString() !=
+                                      'selling')
+                                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                        content: Text('The product is sold')));
+                                  else if (isFav == true) {
                                     _scaffoldKey.currentState.showSnackBar(SnackBar(
                                         content: Text(
                                             'You have unfavourited this product')));
@@ -315,8 +345,11 @@ class _ProductDetailsState extends State<ProdDetails> {
                         Expanded(
                           child: OutlineButton(
                             child: Text("Chat"),
-                            onPressed: () {
-                              if (map.values.toList()[4].toString() == uid)
+                            onPressed: () async {
+                              if(uid == null)
+                                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                    content: Text("You haven't login")));
+                              else if (map.values.toList()[4].toString() == uid)
                                 _scaffoldKey.currentState.showSnackBar(SnackBar(
                                     content: Text('You are the seller')));
                               else if (map.values.toList()[15].toString() !=
@@ -324,6 +357,9 @@ class _ProductDetailsState extends State<ProdDetails> {
                                 _scaffoldKey.currentState.showSnackBar(SnackBar(
                                     content: Text('The product is sold')));
                               else {
+                                var imgurl = await getProfileImg(
+                                    map.values.toList()[4].toString());
+                                print(imgurl);
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -334,8 +370,7 @@ class _ProductDetailsState extends State<ProdDetails> {
                                               contactName: map.values
                                                   .toList()[2]
                                                   .toString(),
-                                              contactPic:
-                                                  "https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg",
+                                              contactPic: imgurl,
                                               prodID: map.values
                                                   .toList()[12]
                                                   .toString(),
@@ -355,8 +390,11 @@ class _ProductDetailsState extends State<ProdDetails> {
                         Expanded(
                           child: OutlineButton(
                             child: Text("Make Offers"),
-                            onPressed: () {
-                              if (map.values.toList()[4].toString() == uid)
+                            onPressed: () async {
+                              if(uid == null)
+                                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                    content: Text("You haven't login")));
+                              else if (map.values.toList()[4].toString() == uid)
                                 _scaffoldKey.currentState.showSnackBar(SnackBar(
                                     content: Text('You are the seller')));
                               else if (map.values.toList()[15].toString() !=
@@ -364,6 +402,8 @@ class _ProductDetailsState extends State<ProdDetails> {
                                 _scaffoldKey.currentState.showSnackBar(SnackBar(
                                     content: Text('The product is sold')));
                               else {
+                                var imgurl = await getProfileImg(
+                                    map.values.toList()[4].toString());
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -374,8 +414,7 @@ class _ProductDetailsState extends State<ProdDetails> {
                                               contactName: map.values
                                                   .toList()[2]
                                                   .toString(),
-                                              contactPic:
-                                                  "https://icon-library.com/images/default-profile-icon/default-profile-icon-16.jpg",
+                                              contactPic: imgurl,
                                               prodID: map.values
                                                   .toList()[12]
                                                   .toString(),

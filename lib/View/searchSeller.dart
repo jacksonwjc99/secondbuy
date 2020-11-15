@@ -3,6 +3,7 @@ import 'package:secondbuy/Model/User.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:secondbuy/View/nav.dart';
 import 'package:secondbuy/View/sellerProfile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SearchSeller extends StatefulWidget {
   @override
@@ -35,7 +36,10 @@ class _SearchSellerState extends State<SearchSeller> {
       Map<dynamic, dynamic> userDB = snapshot.value;
 
       userDB.forEach((key, value) {
-        username.add(value['username']);
+        if(value['username'] != name){
+          username.add(value['username']);
+        }
+
       });
 
       return username;
@@ -46,16 +50,16 @@ class _SearchSellerState extends State<SearchSeller> {
     List<String> dummySearchList = List<String>();
     dummySearchList.addAll(username);
     if (query.isNotEmpty) {
-      List<String> dummyListData = List<String>();
+      List<String> name = List<String>();
       dummySearchList.forEach((item) {
         if ((item.toLowerCase()).contains(query.toLowerCase())) {
           print(query);
-          dummyListData.add(item);
+          name.add(item);
         }
       });
       setState(() {
         items.clear();
-        items.addAll(dummyListData);
+        items.addAll(name);
       });
       return;
     } else {
@@ -66,8 +70,24 @@ class _SearchSellerState extends State<SearchSeller> {
     }
   }
 
+  var name;
+  var i = 0;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
+  void getCurrentUsername() async {
+    final FirebaseUser user = await auth.currentUser();
+    if (i == 0) {
+      setState(() {
+        name = user.displayName;
+      });
+      i++;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    getCurrentUsername();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -107,7 +127,10 @@ class _SearchSellerState extends State<SearchSeller> {
             List<User> userlist = snapshot.data;
             userlist.forEach((element) {
               user = element;
-              username.add(user.username);
+              if(user.username != name){
+                username.add(user.username);
+              }
+
             });
             // Display here
             return new Column(

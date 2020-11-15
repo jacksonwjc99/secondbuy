@@ -5,6 +5,7 @@ import 'package:secondbuy/Util/Global.dart';
 import 'package:secondbuy/View/forgotPassword.dart';
 import 'package:secondbuy/View/nav.dart';
 import 'package:secondbuy/View/signup.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -38,6 +39,13 @@ class _LoginPageSate extends State<LoginPage> {
         Global.useruid = user.user.uid;
         Global.username = user.user.displayName;
         print("!!!!!!" + Global.useruid);
+
+        final userRef =
+        FirebaseDatabase().reference().child("users").child(user.user.uid);
+        userRef.update({
+          'password': _password,
+        });
+
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Nav(page: "Hamepage")),

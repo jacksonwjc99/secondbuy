@@ -333,7 +333,8 @@ class _ProfileState extends State<Profile> {
                               child: Products(
                                   category: "",
                                   subCategory: "",
-                                  sellerProd: true),
+                                  sellerProd: true,
+                                  id: user.id),
                             ),
                             //show purchases
                             Container(

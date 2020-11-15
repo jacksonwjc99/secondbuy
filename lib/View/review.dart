@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:secondbuy/Util/Global.dart';
-import 'package:secondbuy/View/reviewDetail.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class MyReviews extends StatefulWidget {

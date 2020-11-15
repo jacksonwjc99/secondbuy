@@ -10,11 +10,13 @@ class Products extends StatefulWidget {
       {Key key,
       @required this.category,
       @required this.subCategory,
-      @required this.sellerProd})
+      @required this.sellerProd,
+      @required this.id})
       : super(key: key);
   final String category;
   final String subCategory;
   final bool sellerProd;
+  final String id;
 
   @override
   _ProductsState createState() => _ProductsState();
@@ -142,8 +144,8 @@ class _ProductsState extends State<Products> {
               }
             } else {
               // Listings
-              map.removeWhere((key, value) => value['sellerID'] != uid);
-              if (uid != '') {
+              map.removeWhere((key, value) => value['sellerID'] != widget.id);
+              if (widget.id != '') {
                 if (map.values.isNotEmpty) {
                   return GridView.builder(
                       itemCount: map.values.toList().length,

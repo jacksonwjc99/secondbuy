@@ -3,7 +3,10 @@ import 'package:secondbuy/Model/User.dart';
 import 'package:secondbuy/Util/Components/about.dart';
 import 'package:secondbuy/Util/Components/products.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:secondbuy/View/review.dart';
 import 'package:secondbuy/View/searchSeller.dart';
+
+import 'SellerReview.dart';
 
 class SellerProfile extends StatefulWidget {
   SellerProfile({Key key, @required this.id}) : super(key: key);
@@ -135,12 +138,13 @@ class _SellerProfileState extends State<SellerProfile> {
                           child: TabBarView(children: [
                             Container(
                               child: Products(
-                                  category: "",
-                                  subCategory: "",
-                                  sellerProd: true),
+                                category: "",
+                                subCategory: "",
+                                sellerProd: true,
+                                id: widget.id,),
                             ),
                             Container(
-                              child: Text("Reviews"),
+                              child: SellerReview(id: widget.id),
                             ),
                             Container(
                               child: About(
@@ -382,8 +386,8 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => _tabBar.preferredSize.height;
 
   @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(BuildContext context, double shrinkOffset,
+      bool overlapsContent) {
     return new Container(
       child: _tabBar,
     );

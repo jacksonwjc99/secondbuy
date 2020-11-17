@@ -12,9 +12,9 @@ class CategoryList extends StatelessWidget {
         children: <Widget>[
           Category(
             image_location: 'icons/washing-machine.png',
-            image_caption: 'Electrical Appliances',
+            image_caption: 'Electronics',
             category: 'electronics',
-            subCategory: 'appliances',
+            subCategory: '',
           ),
           Category(
             image_location: 'icons/computer.png',

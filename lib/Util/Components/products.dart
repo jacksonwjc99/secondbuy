@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:secondbuy/Model/Product.dart';
 import 'package:secondbuy/View/proddetails.dart';
@@ -222,24 +223,29 @@ class single_prod extends StatelessWidget {
               footer: Container(
                 color: Colors.white70,
                 child: ListTile(
-                  leading: Text(
+                  title: AutoSizeText(
                     product_name,
                     style: TextStyle(fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
-                  title: Text(
+                  subtitle: Text(
                     "RM $product_price",
-                    textAlign: TextAlign.right,
+                    textAlign: TextAlign.center,
                   ),
-                  subtitle: product_status != "selling"
+                  trailing: product_status != "selling"
                       ? product_status == null
                           ? null
                           : Text(
                               "Sold",
                               style: TextStyle(color: Colors.red),
+                              textAlign: TextAlign.center,
                             )
                       : Text(
                           "Selling",
                           style: TextStyle(color: Colors.blue),
+                          textAlign: TextAlign.center,
                         ),
                 ),
               ),

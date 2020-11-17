@@ -30,6 +30,12 @@ class CategoryList extends StatelessWidget {
             subCategory: 'phones',
           ),
           Category(
+            image_location: 'icons/audio.png',
+            image_caption: 'Audio',
+            category: '',
+            subCategory: 'audio',
+          ),
+          Category(
             image_location: 'icons/tv.png',
             image_caption: 'TV, Audio and Video',
             category: '',

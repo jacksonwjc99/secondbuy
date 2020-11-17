@@ -56,13 +56,12 @@ class _HomepageState extends State<Homepage> {
               })
         ],
       ),
-      body: new ListView(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          //show slide
           image_carousel,
 
-          //show categories text
-          new Padding(
+          new Container(
             padding: const EdgeInsets.all(10.0),
             child: new Text('Categories'),
           ),
@@ -71,17 +70,17 @@ class _HomepageState extends State<Homepage> {
           CategoryList(),
 
           //show product text
-          new Padding(
+          new Container(
             padding: const EdgeInsets.all(10.0),
             child: new Text('Recent Products'),
           ),
 
-          Container(
-            height: 380.0,
+          Expanded(
             child: Products(),
           ),
         ],
       ),
+
     );
   }
 }

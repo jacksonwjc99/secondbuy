@@ -20,19 +20,19 @@ class CategoryList extends StatelessWidget {
             image_location: 'icons/computer.png',
             image_caption: 'Computers',
             category: '',
-            subCategory: 'computer',
+            subCategory: 'Computer and Laptops',
           ),
           Category(
             image_location: 'icons/audio.png',
             image_caption: 'Audio',
             category: '',
-            subCategory: 'audio',
+            subCategory: 'Audio',
           ),
           Category(
             image_location: 'icons/tv.png',
-            image_caption: 'TV, Audio and Video',
+            image_caption: 'TV and Entertainment Systems',
             category: '',
-            subCategory: 'tv',
+            subCategory: 'TV and Entertainment Systems',
           ),
           Category(
             image_location: 'icons/smartphone-call.png',
@@ -56,19 +56,19 @@ class CategoryList extends StatelessWidget {
             image_location: 'icons/shoes.png',
             image_caption: 'Shoes',
             category: '',
-            subCategory: 'shoes',
+            subCategory: 'Shoes',
           ),
           Category(
             image_location: 'icons/watches.png',
             image_caption: 'Watches and Fashion Accessories',
             category: '',
-            subCategory: 'accessories',
+            subCategory: 'Accessories',
           ),
           Category(
             image_location: 'icons/bags.png',
-            image_caption: 'Bags and Luggages',
+            image_caption: 'Bags and Wallets',
             category: '',
-            subCategory: 'bags',
+            subCategory: 'Bags and Wallets',
           ),
           Category(
             image_location: 'icons/furniture.png',
@@ -148,7 +148,7 @@ class Category extends StatelessWidget {
           );
         },
         child: Container(
-          width: 90.0,
+          width: 95.0,
           child: ListTile(
             title: Image.asset(
               image_location,

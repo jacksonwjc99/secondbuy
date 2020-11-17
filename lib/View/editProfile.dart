@@ -154,8 +154,7 @@ class _EditProfileState extends State<EditProfile> {
                   child: new Form(
                 key: formkey,
                 child: Center(
-                  child: new ListView(
-                    shrinkWrap: true,
+                  child: new Column(
                     children: <Widget>[
                       new Text(
                         "Profile Details",

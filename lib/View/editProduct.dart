@@ -351,8 +351,7 @@ class _EditProductState extends State<EditProduct> {
                 child: Center(
                   child: Form(
                     key: _formKey,
-                    child: ListView(
-                      shrinkWrap: true,
+                    child: Column(
                       children: <Widget>[
                         InputField(
                             "Product Name is required",

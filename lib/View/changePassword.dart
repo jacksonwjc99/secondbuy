@@ -138,8 +138,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   child: new Form(
                 key: formkey,
                 child: Center(
-                  child: new ListView(
-                    shrinkWrap: true,
+                  child: new Column(
                     children: <Widget>[
                       new Text(
                         "Change Password",

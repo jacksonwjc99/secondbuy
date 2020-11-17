@@ -362,8 +362,7 @@ class _SellState extends State<Sell> {
                     child: Center(
                       child: Form(
                         key: _formKey,
-                        child: ListView(
-                          shrinkWrap: true,
+                        child: Column(
                           children: <Widget>[
                             Container(
                               child: //buildGridView(),

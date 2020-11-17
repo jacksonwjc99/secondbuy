@@ -73,7 +73,7 @@ class _SearchSellerState extends State<SearchSeller> {
   var i = 0;
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-  void getCurrentUsername2() async {
+  void setCurrentUsername() async {
     String username = await getCurrentUsername();
     if (i == 0) {
       setState(() {
@@ -100,7 +100,7 @@ class _SearchSellerState extends State<SearchSeller> {
 
   @override
   Widget build(BuildContext context) {
-    getCurrentUsername2();
+    setCurrentUsername();
 
     return Scaffold(
       appBar: AppBar(

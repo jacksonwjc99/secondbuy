@@ -27,7 +27,7 @@ class CategoryList extends StatelessWidget {
             image_location: 'icons/smartphone-call.png',
             image_caption: 'Mobiles and Tablets',
             category: '',
-            subCategory: 'phone',
+            subCategory: 'phones',
           ),
           Category(
             image_location: 'icons/tv.png',

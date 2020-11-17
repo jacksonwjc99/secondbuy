@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:secondbuy/Util/Components/products.dart';
-import 'package:secondbuy/View/proddetails.dart';
 import 'package:secondbuy/View/productpage.dart';
 
 class CategoryList extends StatelessWidget {
@@ -14,7 +13,7 @@ class CategoryList extends StatelessWidget {
           Category(
             image_location: 'icons/washing-machine.png',
             image_caption: 'Electrical Appliances',
-            category: '',
+            category: 'electronics',
             subCategory: 'appliances',
           ),
           Category(
@@ -22,12 +21,6 @@ class CategoryList extends StatelessWidget {
             image_caption: 'Computers',
             category: '',
             subCategory: 'computer',
-          ),
-          Category(
-            image_location: 'icons/smartphone-call.png',
-            image_caption: 'Mobiles and Tablets',
-            category: '',
-            subCategory: 'phones',
           ),
           Category(
             image_location: 'icons/audio.png',
@@ -40,6 +33,12 @@ class CategoryList extends StatelessWidget {
             image_caption: 'TV, Audio and Video',
             category: '',
             subCategory: 'tv',
+          ),
+          Category(
+            image_location: 'icons/smartphone-call.png',
+            image_caption: 'Mobile and Gadgets',
+            category: 'mobile',
+            subCategory: '',
           ),
           Category(
             image_location: 'icons/mens.png',
@@ -73,9 +72,9 @@ class CategoryList extends StatelessWidget {
           ),
           Category(
             image_location: 'icons/furniture.png',
-            image_caption: 'Furnitures and Decoration',
-            category: '',
-            subCategory: 'furniture',
+            image_caption: 'Home and Furniture',
+            category: 'furniture',
+            subCategory: '',
           ),
           Category(
             image_location: 'icons/sports.png',
@@ -85,7 +84,7 @@ class CategoryList extends StatelessWidget {
           ),
           Category(
             image_location: 'icons/hobby.png',
-            image_caption: 'Hobbies and Collectibles',
+            image_caption: 'Toys and Games',
             category: 'toysgames',
             subCategory: '',
           ),
@@ -93,12 +92,6 @@ class CategoryList extends StatelessWidget {
             image_location: 'icons/book.png',
             image_caption: 'Books and Magazine',
             category: 'stationery',
-            subCategory: '',
-          ),
-          Category(
-            image_location: 'icons/music.png',
-            image_caption: 'Music and Games',
-            category: 'toysgames',
             subCategory: '',
           ),
           Category(

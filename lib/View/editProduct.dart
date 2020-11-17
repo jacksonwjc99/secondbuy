@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:secondbuy/Util/Global.dart';
 import 'package:secondbuy/View/login.dart';
+import 'package:secondbuy/View/nav.dart';
 import 'package:secondbuy/View/signup.dart';
 
 class EditProduct extends StatefulWidget {
@@ -318,11 +319,25 @@ class _EditProductState extends State<EditProduct> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
         title: Text(
-          'Sell',
+          'Edit Product',
           style: TextStyle(color: Colors.black),
+        ),
+        elevation: 0.0,
+        centerTitle: true,
+        automaticallyImplyLeading: true,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Nav(page: "Profile")),
+            );
+          },
         ),
       ),
       body: ListView(
@@ -694,12 +709,12 @@ class _EditProductState extends State<EditProduct> {
           style: new TextStyle(fontSize: 16.0),
         ),
         new Radio(
-          value: "old",
+          value: "used",
           groupValue: _radioValue2,
           onChanged: _handleRadioValueChange2,
         ),
         new Text(
-          'Old',
+          'Used',
           style: new TextStyle(fontSize: 16.0),
         ),
       ],
@@ -726,7 +741,7 @@ class _EditProductState extends State<EditProduct> {
       switch (_radioValue2) {
         case "new":
           break;
-        case "old":
+        case "used":
           break;
       }
     });

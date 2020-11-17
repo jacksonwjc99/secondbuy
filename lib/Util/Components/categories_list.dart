@@ -90,7 +90,7 @@ class CategoryList extends StatelessWidget {
           ),
           Category(
             image_location: 'icons/book.png',
-            image_caption: 'Books and Magazine',
+            image_caption: 'Books and Stationery',
             category: 'stationery',
             subCategory: '',
           ),

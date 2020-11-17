@@ -654,7 +654,7 @@ class _SellState extends State<Sell> {
               ),
               DropdownMenuItem<String>(
                 value: "sports",
-                child: Text("Sports"),
+                child: Text("Sports and Outdoors"),
               ),
               DropdownMenuItem<String>(
                 value: "vehicles",
@@ -739,12 +739,12 @@ class _SellState extends State<Sell> {
           style: new TextStyle(fontSize: 16.0),
         ),
         new Radio(
-          value: "old",
+          value: "used",
           groupValue: _radioValue2,
           onChanged: _handleRadioValueChange2,
         ),
         new Text(
-          'Old',
+          'Used',
           style: new TextStyle(fontSize: 16.0),
         ),
       ],
@@ -771,7 +771,7 @@ class _SellState extends State<Sell> {
       switch (_radioValue2) {
         case "new":
           break;
-        case "old":
+        case "used":
           break;
       }
     });

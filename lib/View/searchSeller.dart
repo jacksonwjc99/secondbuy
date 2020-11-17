@@ -39,7 +39,6 @@ class _SearchSellerState extends State<SearchSeller> {
         if(value['username'] != name){
           username.add(value['username']);
         }
-
       });
 
       return username;
@@ -74,19 +73,34 @@ class _SearchSellerState extends State<SearchSeller> {
   var i = 0;
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-  void getCurrentUsername() async {
-    final FirebaseUser user = await auth.currentUser();
+  void getCurrentUsername2() async {
+    String username = await getCurrentUsername();
     if (i == 0) {
       setState(() {
-        name = user.displayName;
+        name = username;
       });
+      print(name);
       i++;
     }
   }
 
+  Future<String> getCurrentUsername() async {
+    final FirebaseUser user = await auth.currentUser();
+    return FirebaseDatabase.instance
+        .reference()
+        .child("users")
+        .child(user.uid)
+        .once()
+        .then((DataSnapshot snapshot) {
+      Map<dynamic, dynamic> userDB = snapshot.value;
+
+      return userDB['username'];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    getCurrentUsername();
+    getCurrentUsername2();
 
     return Scaffold(
       appBar: AppBar(

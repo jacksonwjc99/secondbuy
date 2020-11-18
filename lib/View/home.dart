@@ -3,6 +3,7 @@ import 'package:carousel_pro/carousel_pro.dart';
 import 'package:secondbuy/Util/Components/categories_list.dart';
 import 'package:secondbuy/Util/Components/products.dart';
 import 'package:secondbuy/View/searchSeller.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -10,8 +11,24 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  String uid;
+  var i = 0;
+
+  getUser() async {
+    final FirebaseUser user = await auth.currentUser();
+    if(i == 0){
+      setState(() {
+        uid = user.uid;
+      });
+      i++;
+    }
+  }
   @override
   Widget build(BuildContext context) {
+    getUser();
+
+
     Widget image_carousel = new Container(
       height: 170.0,
       child: new Carousel(
@@ -76,7 +93,7 @@ class _HomepageState extends State<Homepage> {
           ),
 
           Expanded(
-            child: Products(),
+            child: Products(id: uid,),
           ),
         ],
       ),

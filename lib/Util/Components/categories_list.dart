@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:secondbuy/Util/Components/products.dart';
 import 'package:secondbuy/View/productpage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class CategoryList extends StatelessWidget {
   @override
@@ -130,8 +131,22 @@ class Category extends StatelessWidget {
       this.category,
       this.subCategory});
 
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  String uid;
+  var i = 0;
+
+  getUser() async {
+    final FirebaseUser user = await auth.currentUser();
+    if (i == 0) {
+      uid = user.uid;
+      i++;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    getUser();
+    print(uid);
     return Padding(
       padding: const EdgeInsets.all(2.0),
       child: InkWell(
@@ -144,6 +159,7 @@ class Category extends StatelessWidget {
                         product: Products(
                       category: category,
                       subCategory: subCategory,
+                      id: uid,
                     ))),
           );
         },

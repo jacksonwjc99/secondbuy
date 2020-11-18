@@ -59,6 +59,7 @@ class _ProductsState extends State<Products> {
                 widget.subCategory == null &&
                 widget.category == null) {
               //Show all Product
+              map.removeWhere((key, value) => value['sellerID'] == widget.id);
               map.removeWhere((key, value) => value['status'] != "selling");
 
               if (map.values.isNotEmpty) {
@@ -86,6 +87,8 @@ class _ProductsState extends State<Products> {
                 );
               }
             } else if (widget.category != '') {
+              map.removeWhere((key, value) => value['sellerID'] == widget.id);
+              map.removeWhere((key, value) => value['status'] != "selling");
               //category
               print("Category = " + widget.category);
               map.removeWhere((key, value) =>
@@ -115,6 +118,8 @@ class _ProductsState extends State<Products> {
                 );
               }
             } else if (widget.subCategory != '') {
+              map.removeWhere((key, value) => value['sellerID'] == widget.id);
+              map.removeWhere((key, value) => value['status'] != "selling");
               //subcategory
               print("Subcategory = " + widget.subCategory);
               map.removeWhere(

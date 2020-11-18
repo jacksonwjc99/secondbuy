@@ -95,6 +95,25 @@ class _EditProfileState extends State<EditProfile> {
           'photoURL': imgURL,
         });
 
+        FirebaseDatabase.instance
+            .reference()
+            .child("products")
+            .once()
+            .then((DataSnapshot snapshot) {
+          Map<dynamic, dynamic> prodDB = snapshot.value;
+          prodDB.forEach((key, value) {
+            if (value['sellerID'] == user.uid) {
+              final prodRef = FirebaseDatabase()
+                  .reference()
+                  .child("products")
+                  .child(value['id']);
+              prodRef.update({
+                'sellerName': _username.isEmpty ? username : _username,
+              });
+            }
+          });
+        });
+
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Nav(page: "Profile")),

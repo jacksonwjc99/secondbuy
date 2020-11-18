@@ -14,6 +14,8 @@ import 'package:secondbuy/Util/Global.dart';
 import 'package:secondbuy/View/login.dart';
 import 'package:secondbuy/View/signup.dart';
 
+import 'nav.dart';
+
 class Sell extends StatefulWidget {
   _SellState createState() => _SellState();
 }
@@ -843,5 +845,10 @@ class _SellState extends State<Sell> {
     await productDb.child('prodImg').push().set({
       'image': imgURL,
     });
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Nav(page: "Sell")),
+    );
   }
 }

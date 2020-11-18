@@ -36,7 +36,7 @@ class _ChattingState extends State<Chatting> {
   var i = 0;
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-    void getUserID() async {
+  void getUserID() async {
     final FirebaseUser user = await auth.currentUser();
     if (i == 0) {
       setState(() {
@@ -88,7 +88,8 @@ class _ChattingState extends State<Chatting> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Nav(page: "Hamepage")),
+                MaterialPageRoute(
+                    builder: (context) => Nav(page: "Chat")),
               );
             }),
       ),
@@ -312,29 +313,36 @@ class _ChattingState extends State<Chatting> {
 
     DateFormat df = DateFormat('yyyy-MM-dd HH:mm:ss');
     DateTime dateNow = df.parse(DateTime.now().toString());
-
+    var oldkey = "";
     offerRef.once().then((DataSnapshot snapshot) {
       snapshot.value.forEach((key, value) {
-        if (uid == value['seller'] &&
-            widget.contactID == value['buyer'] &&
-            value['status'] == "waiting" &&
-            choice == "accept") {
-          // update offer status
-          offerRef.child(key).update({'status': 'accepted'});
+        if (oldkey == "") {
+          if (uid == value['seller'] &&
+              widget.contactID == value['buyer'] &&
+              value['status'] == "waiting" &&
+              choice == "accept") {
+            // update offer status
+            offerRef.child(key).update({'status': 'accepted'});
 
-          //update user purchase list
-          userRef.child(value['buyer']).child('purchases').push().set({
-            'productID': value['prodID'],
-          });
+            //update user purchase list
+            userRef.child(value['buyer']).child('purchases').push().set({
+              'productID': value['prodID'],
+            });
 
-          // update product status to sold
-          productRef.child(value['prodID']).update({
-            'status': 'sold',
-            'purchasedDate': dateNow.toString(),
-          });
-        } else {
-          offerRef.child(key).update({'status': 'rejected'});
-        }
+            // update product status to sold
+            productRef.child(value['prodID']).update({
+              'status': 'sold',
+              'purchasedDate': dateNow.toString(),
+            });
+            oldkey = key;
+          } else if (uid == value['seller'] &&
+              widget.contactID == value['buyer'] &&
+              value['status'] == "waiting" &&
+              choice == "reject") {
+            offerRef.child(key).update({'status': 'rejected'});
+          }
+          oldkey = "";
+        } else {}
       });
     });
   }
@@ -352,14 +360,19 @@ class _ChattingState extends State<Chatting> {
         print("No snapshot value");
       } else {
         snapshot.value.forEach((key, value) {
-          if (uid == value['seller'] &&
-              widget.contactID == value['buyer'] &&
-              value['status'] == 'waiting' && value['prodID'] == widget.prodID) {
+          if ((uid == value['seller'] &&
+                  widget.contactID == value['buyer'] &&
+                  value['status'] == 'waiting' &&
+                  value['prodID'] == widget.prodID) ||
+              (uid == value['seller'] &&
+                  widget.contactID == value['buyer'] &&
+                  value['status'] == 'waiting')) {
             isSeller = true;
             productID = value['prodID'];
             offeredPrice = double.parse(value['price'].toString());
-          } else if (uid == value['buyer'] &&
-              widget.contactID == value['seller'] && value['prodID'] == widget.prodID) {
+          } else if ((uid == value['buyer'] &&
+              widget.contactID == value['seller'] &&
+              value['prodID'] == widget.prodID)) {
             isBuyer = true;
             productID = value['prodID'];
             offerStatus = value['status'];

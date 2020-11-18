@@ -35,6 +35,7 @@ class _EditProductState extends State<EditProduct> {
   double prodPrice;
   String prodDetails;
   String address;
+  DateTime saledate;
 
   //category
 //  List<String> _category = ['A', 'B', 'C', 'D'];
@@ -271,8 +272,10 @@ class _EditProductState extends State<EditProduct> {
 
   var isUserLogin = false;
   var i = 0;
+  var j = 0;
 
-  getProductDetails() {
+  @override
+  Widget build(BuildContext context) {
     FirebaseDatabase.instance
         .reference()
         .child("products")
@@ -280,7 +283,7 @@ class _EditProductState extends State<EditProduct> {
         .once()
         .then((DataSnapshot productSnapshot) {
       Map<dynamic, dynamic> products = productSnapshot.value;
-      setState(() {
+      if (j == 0) {
         prodName = products['name'];
         prodPrice = products['price'].toDouble();
         prodDetails = products['details'];
@@ -289,13 +292,10 @@ class _EditProductState extends State<EditProduct> {
         //category = products['category'];
         //subCategory = products['subcategory'];
         address = products['address'];
-      });
+        saledate = DateTime.parse(products['sellDate']);
+        j++;
+      }
     });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    getProductDetails();
 
     auth.currentUser().then((user) {
       if (user != null) {
@@ -333,10 +333,7 @@ class _EditProductState extends State<EditProduct> {
             color: Colors.black,
           ),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Nav(page: "Profile")),
-            );
+            Navigator.pop(context);
           },
         ),
       ),
@@ -532,7 +529,7 @@ class _EditProductState extends State<EditProduct> {
     return new TextFormField(
       initialValue: initialValue,
       decoration: InputDecoration(
-        enabled: _radioValue == "meetup" ? true : false,
+        enabled: false,
         hintText: hint,
         labelText: label,
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 20.0),
@@ -726,11 +723,14 @@ class _EditProductState extends State<EditProduct> {
 
       switch (_radioValue) {
         case "meetup":
+          print(3);
           break;
         case "delivery":
+          print(4);
           break;
       }
     });
+    print(1);
   }
 
   void _handleRadioValueChange2(String opt) {
@@ -739,11 +739,14 @@ class _EditProductState extends State<EditProduct> {
 
       switch (_radioValue2) {
         case "new":
+          print(5);
           break;
         case "used":
+          print(6);
           break;
       }
     });
+    print(2);
   }
 
   Widget TextArea(
@@ -781,10 +784,10 @@ class _EditProductState extends State<EditProduct> {
     });
 
     DateFormat df = DateFormat('yyyy-MM-dd HH:mm:ss');
-    DateTime dateNow = df.parse(DateTime.now().toString());
+    DateTime dateNow = df.parse(saledate.toString());
 
     //uploading product
-
+    print(user.displayName);
     await productDb.update({
       'name': prodName,
       'price': prodPrice,
